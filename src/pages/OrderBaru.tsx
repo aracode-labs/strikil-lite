@@ -403,17 +403,45 @@ export default function OrderBaru() {
           <label className="mb-1 block text-sm font-medium text-gray-700">
             Foto Penimbangan (opsional)
           </label>
-          <input
-            type="file"
-            accept="image/*"
-            capture="environment"
-            onChange={(e) => {
-              const file = e.target.files?.[0] || null
-              setFotoPenimbangan(file)
-              setFotoPreview(file ? URL.createObjectURL(file) : null)
-            }}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-orange-500 focus:outline-none"
-          />
+          <div className="grid grid-cols-2 gap-2">
+            <input
+              id="foto-kamera"
+              type="file"
+              accept="image/*"
+              capture="environment"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0] || null
+                setFotoPenimbangan(file)
+                setFotoPreview(file ? URL.createObjectURL(file) : null)
+              }}
+            />
+            <label
+              htmlFor="foto-kamera"
+              className="flex cursor-pointer items-center justify-center rounded-lg border border-gray-300 px-3 py-3 text-sm font-medium text-gray-700 hover:border-orange-500 hover:text-orange-700"
+            >
+              📸 Ambil Foto
+            </label>
+
+            <input
+              id="foto-gallery"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0] || null
+                setFotoPenimbangan(file)
+                setFotoPreview(file ? URL.createObjectURL(file) : null)
+              }}
+            />
+            <label
+              htmlFor="foto-gallery"
+              className="flex cursor-pointer items-center justify-center rounded-lg border border-gray-300 px-3 py-3 text-sm font-medium text-gray-700 hover:border-orange-500 hover:text-orange-700"
+            >
+              🖼️ Pilih dari Gallery
+            </label>
+          </div>
+
           {fotoPreview && (
             <div className="mt-2">
               <img src={fotoPreview} alt="Preview" className="mx-auto h-32 w-32 rounded-lg object-cover" />
