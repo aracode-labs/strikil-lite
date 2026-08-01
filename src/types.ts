@@ -6,6 +6,7 @@ export interface Customer {
   catatan: string
   ongkir: number
   created_at: string
+  customPrices?: Record<string, number>
 }
 
 export type OrderStatus = 'Diterima' | 'Diproses' | 'Siap Diambil' | 'Selesai'
@@ -17,6 +18,16 @@ export interface Service {
   satuan_label: string
   harga: number
   created_at: string
+}
+
+export interface CustomerServicePrice {
+  id: string
+  customer_id: string
+  service_id: string
+  harga_custom: number | null
+  created_at: string
+  updated_at: string
+  services?: Service
 }
 
 export interface Order {

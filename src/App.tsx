@@ -1,3 +1,4 @@
+
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { supabase } from './lib/supabase'
@@ -11,6 +12,7 @@ import OrderAktif from './pages/OrderAktif'
 import Riwayat from './pages/Riwayat'
 import Pengaturan from './pages/Pengaturan'
 import Progress from './pages/Progress'
+import Jasa from './pages/Jasa'
 
 function RedirectIfAuthed() {
   const [loading, setLoading] = useState(true)
@@ -60,6 +62,7 @@ export default function App() {
           <Route path="/order-aktif" element={<OrderAktif />} />
           <Route path="/riwayat" element={<Riwayat />} />
           <Route path="/pelanggan" element={<Pelanggan />} />
+          <Route path="/jasa" element={<Jasa />} />
           <Route path="/pengaturan" element={<Pengaturan />} />
           <Route path="/e-struk/:id" element={<EStruk />} />
         </Route>

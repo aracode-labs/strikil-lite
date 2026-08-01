@@ -28,11 +28,20 @@ export default function OrderBaru() {
   async function loadCustomers() {
     const { data, error } = await supabase
       .from('customers')
-      .select('*')
+      .select('*, customer_service_prices(service_id, harga_custom)')
       .order('nama', { ascending: true })
 
     if (!error && data) {
-      setCustomers(data as Customer[])
+      const customersWithPrices = data.map((c: any) => {
+        const prices: Record<string, number> = {}
+        if (c.customer_service_prices) {
+          c.customer_service_prices.forEach((p: any) => {
+            if (p.harga_custom != null) prices[p.service_id] = p.harga_custom
+          })
+        }
+        return { ...c, customPrices: prices }
+      })
+      setCustomers(customersWithPrices as any[])
     }
   }
 
@@ -69,7 +78,9 @@ export default function OrderBaru() {
   }, [regulerService, selectedService])
 
   const jumlahNum = parseFloat(jumlah) || 0
-  const hargaSatuan = selectedService?.harga ?? 0
+  const hargaSatuan = selectedService
+    ? (selected?.customPrices?.[selectedService.id] ?? selectedService.harga)
+    : 0
   const ongkirNum = parseFloat(ongkir) || 0
   const subtotal = jumlahNum * hargaSatuan
   const total = pengantaran === 'antar_jemput' ? subtotal + ongkirNum : subtotal

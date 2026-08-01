@@ -153,6 +153,19 @@ export default function Progress() {
                 {order.jumlah ?? order.berat} {order.satuan_label ?? 'Kg'}
               </span>
             </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Harga / {order.satuan_label ?? 'Kg'}</span>
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-gray-900">
+                  {formatRupiah(Number(order.harga_satuan ?? order.harga_perkg))}
+                </span>
+                {order.customers?.customPrices?.[order.service_id ?? ''] && (
+                  <span className="rounded-full bg-orange-50 px-2 py-0.5 text-[10px] font-medium text-orange-600">
+                    Custom
+                  </span>
+                )}
+              </div>
+            </div>
             {order.pengantaran === 'antar_jemput' && (
               <>
                 <div className="flex justify-between">

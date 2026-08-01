@@ -164,9 +164,16 @@ export default function EStruk() {
             <span className="text-gray-500">
               Harga / {order.satuan_label ?? 'Kg'}
             </span>
-            <span className="font-semibold text-gray-900">
-              {formatRupiah(Number(order.harga_satuan ?? order.harga_perkg))}
-            </span>
+            <div className="text-right">
+              <span className="font-semibold text-gray-900">
+                {formatRupiah(Number(order.harga_satuan ?? order.harga_perkg))}
+              </span>
+              {order.customers?.customPrices?.[order.service_id ?? ''] && (
+                <span className="ml-2 rounded-full bg-orange-50 px-2 py-0.5 text-[10px] font-medium text-orange-600">
+                  Custom
+                </span>
+              )}
+            </div>
           </div>
           <div className="my-2 border-t border-dashed border-gray-200" />
           <div className="flex justify-between gap-4">
