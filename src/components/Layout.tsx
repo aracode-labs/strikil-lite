@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
@@ -12,6 +13,7 @@ const navItems = [
 ]
 
 export default function Layout() {
+  const [menuOpen, setMenuOpen] = useState(false)
   const navigate = useNavigate()
 
   async function handleLogout() {
@@ -20,10 +22,23 @@ export default function Layout() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 pb-20 md:pb-0">
-      {/* Header */}
-      <header className="sticky top-0 z-10 bg-blue-600 text-white shadow">
+    <div className="min-h-screen bg-gray-100">
+      {/* Header dengan hamburger */}
+      <header className="sticky top-0 z-20 bg-blue-600 text-white shadow">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="rounded-lg p-2 hover:bg-blue-700"
+            aria-label="Menu"
+          >
+            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {menuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
           <h1 className="text-lg font-bold">STRIKIL LITE</h1>
           <button
             onClick={handleLogout}
@@ -32,53 +47,34 @@ export default function Layout() {
             Keluar
           </button>
         </div>
+
+        {/* Dropdown Menu */}
+        {menuOpen && (
+          <nav className="border-t border-blue-500 bg-blue-700">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.to === '/'}
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-4 py-3 text-sm font-medium ${
+                    isActive ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-600'
+                  }`
+                }
+              >
+                <span className="text-lg">{item.icon}</span>
+                {item.label}
+              </NavLink>
+            ))}
+          </nav>
+        )}
       </header>
 
       {/* Konten */}
       <main className="mx-auto max-w-3xl px-4 py-4">
         <Outlet />
       </main>
-
-      {/* Navigasi bawah (HP) */}
-      <nav className="fixed bottom-0 left-0 right-0 z-10 border-t border-gray-200 bg-white md:hidden">
-        <div className="grid grid-cols-7">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.to === '/'}
-              className={({ isActive }) =>
-                `flex flex-col items-center gap-0.5 py-2 text-[10px] font-medium ${
-                  isActive ? 'text-blue-600' : 'text-gray-500'
-                }`
-              }
-            >
-              <span className="text-lg leading-none">{item.icon}</span>
-              {item.label}
-            </NavLink>
-          ))}
-        </div>
-      </nav>
-
-      {/* Navigasi atas (desktop) */}
-      <nav className="fixed bottom-0 left-0 right-0 z-10 hidden border-t border-gray-200 bg-white md:block">
-        <div className="mx-auto flex max-w-3xl items-center justify-center gap-2 py-2">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.to === '/'}
-              className={({ isActive }) =>
-                `rounded-lg px-4 py-2 text-sm font-medium ${
-                  isActive ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'
-                }`
-              }
-            >
-              {item.label}
-            </NavLink>
-          ))}
-        </div>
-      </nav>
     </div>
   )
 }
