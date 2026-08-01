@@ -7,6 +7,7 @@ const navItems = [
   { to: '/order-aktif', label: 'Order Aktif', icon: '📋' },
   { to: '/riwayat', label: 'Riwayat', icon: '🕘' },
   { to: '/pelanggan', label: 'Pelanggan', icon: '👥' },
+  { to: '/jasa', label: 'Jasa & Tarif', icon: '💰' },
   { to: '/pengaturan', label: 'Pengaturan', icon: '⚙️' },
 ]
 
@@ -40,7 +41,7 @@ export default function Layout() {
 
       {/* Navigasi bawah (HP) */}
       <nav className="fixed bottom-0 left-0 right-0 z-10 border-t border-gray-200 bg-white md:hidden">
-        <div className="grid grid-cols-6">
+        <div className="grid grid-cols-7">
           {navItems.map((item) => (
             <NavLink
               key={item.to}
