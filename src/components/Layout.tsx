@@ -23,22 +23,9 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Header dengan hamburger */}
+      {/* Header */}
       <header className="sticky top-0 z-20 bg-blue-600 text-white shadow">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="rounded-lg p-2 hover:bg-blue-700"
-            aria-label="Menu"
-          >
-            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {menuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
           <h1 className="text-lg font-bold">STRIKIL LITE</h1>
           <button
             onClick={handleLogout}
@@ -47,29 +34,38 @@ export default function Layout() {
             Keluar
           </button>
         </div>
-
-        {/* Dropdown Menu */}
-        {menuOpen && (
-          <nav className="border-t border-blue-500 bg-blue-700">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end={item.to === '/'}
-                onClick={() => setMenuOpen(false)}
-                className={({ isActive }) =>
-                  `flex items-center gap-3 px-4 py-3 text-sm font-medium ${
-                    isActive ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-600'
-                  }`
-                }
-              >
-                <span className="text-lg">{item.icon}</span>
-                {item.label}
-              </NavLink>
-            ))}
-          </nav>
-        )}
       </header>
+
+      {/* Floating Menu Button (kanan atas) */}
+      <button
+        onClick={() => setMenuOpen(!menuOpen)}
+        className="fixed top-20 right-4 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-xl text-white shadow-lg hover:bg-blue-700 md:top-4 md:right-4"
+        aria-label="Menu"
+      >
+        {menuOpen ? '✕' : '☰'}
+      </button>
+
+      {/* Dropdown Menu */}
+      {menuOpen && (
+        <nav className="fixed inset-x-0 top-24 z-30 border-t border-blue-500 bg-blue-700 md:left-auto md:right-4 md:top-16 md:w-64 md:rounded-xl md:border">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.to === '/'}
+              onClick={() => setMenuOpen(false)}
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-4 py-3 text-sm font-medium ${
+                  isActive ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-600'
+                }`
+              }
+            >
+              <span className="text-lg">{item.icon}</span>
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
+      )}
 
       {/* Konten */}
       <main className="mx-auto max-w-3xl px-4 py-4">
