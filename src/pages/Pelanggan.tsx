@@ -15,19 +15,25 @@ export default function Pelanggan() {
   const [ongkir, setOngkir] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [loadError, setLoadError] = useState('')
 
   useEffect(() => {
     loadCustomers()
   }, [])
 
   async function loadCustomers() {
+    setLoadError('')
     const { data, error } = await supabase
       .from('customers')
       .select('*')
       .order('nama', { ascending: true })
 
-    if (!error && data) {
+    if (error) {
+      setLoadError(error.message)
+      console.error('Error loading customers:', error)
+    } else if (data) {
       setCustomers(data as Customer[])
+      console.log('Customers loaded:', data.length)
     }
     setLoading(false)
   }
@@ -224,6 +230,13 @@ export default function Pelanggan() {
           placeholder="🔍 Cari nama / nomor HP"
         />
       </div>
+
+      {/* Error loading */}
+      {loadError && (
+        <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+          ❌ Gagal memuat pelanggan: {loadError}
+        </div>
+      )}
 
       {/* Daftar */}
       {loading ? (
