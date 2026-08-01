@@ -26,10 +26,11 @@ alter table public.orders add column if not exists harga_satuan numeric(10,2) no
 -- 3. RLS untuk services
 alter table public.services enable row level security;
 
+drop policy if exists "services_all_authenticated" on public.services;
 create policy "services_all_authenticated" on public.services
   for all to authenticated using (true) with check (true);
 
--- Policy publik: services bisa dibaca anon (untuk halaman Progress)
+drop policy if exists "services_public_read" on public.services;
 create policy "services_public_read" on public.services
   for select to anon, authenticated using (true);
 
