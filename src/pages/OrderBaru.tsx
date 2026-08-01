@@ -26,22 +26,49 @@ export default function OrderBaru() {
   }, [])
 
   async function loadCustomers() {
+    try {
+      const { data, error } = await supabase
+        .from('customers')
+        .select('*, customer_service_prices(service_id, harga_custom)')
+        .order('nama', { ascending: true })
+
+      if (error) {
+        // Jika tabel customer_service_prices belum ada, fallback ke query biasa
+        if (error.message.includes('customer_service_prices') || error.code === '42P01') {
+          console.warn('Tabel customer_service_prices belum ada, fallback ke query biasa')
+          await loadCustomersFallback()
+          return
+        }
+        console.error('Error loading customers:', error)
+        return
+      }
+
+      if (data) {
+        const customersWithPrices = data.map((c: any) => {
+          const prices: Record<string, number> = {}
+          if (c.customer_service_prices) {
+            c.customer_service_prices.forEach((p: any) => {
+              if (p.harga_custom != null) prices[p.service_id] = p.harga_custom
+            })
+          }
+          return { ...c, customPrices: prices }
+        })
+        setCustomers(customersWithPrices as any[])
+      }
+    } catch (err) {
+      console.error('Exception loading customers:', err)
+      await loadCustomersFallback()
+    }
+  }
+
+  async function loadCustomersFallback() {
     const { data, error } = await supabase
       .from('customers')
-      .select('*, customer_service_prices(service_id, harga_custom)')
+      .select('*')
       .order('nama', { ascending: true })
 
     if (!error && data) {
-      const customersWithPrices = data.map((c: any) => {
-        const prices: Record<string, number> = {}
-        if (c.customer_service_prices) {
-          c.customer_service_prices.forEach((p: any) => {
-            if (p.harga_custom != null) prices[p.service_id] = p.harga_custom
-          })
-        }
-        return { ...c, customPrices: prices }
-      })
-      setCustomers(customersWithPrices as any[])
+      setCustomers(data as Customer[])
     }
   }
 

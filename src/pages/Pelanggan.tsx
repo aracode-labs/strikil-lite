@@ -38,6 +38,43 @@ export default function Pelanggan() {
     setLoading(false)
   }
 
+  async function loadCustomersWithPrices() {
+    setLoadError('')
+    try {
+      const { data, error } = await supabase
+        .from('customers')
+        .select('*, customer_service_prices(service_id, harga_custom)')
+        .order('nama', { ascending: true })
+
+      if (error) {
+        // Jika tabel customer_service_prices belum ada, fallback ke loadCustomers biasa
+        if (error.message.includes('customer_service_prices') || error.code === '42P01') {
+          console.warn('Tabel customer_service_prices belum ada, menggunakan data tanpa harga custom')
+          await loadCustomers()
+          return
+        }
+        setLoadError(error.message)
+        console.error('Error loading customers:', error)
+      } else if (data) {
+        const customersWithPrices = data.map((c: any) => {
+          const prices: Record<string, number> = {}
+          if (c.customer_service_prices) {
+            c.customer_service_prices.forEach((p: any) => {
+              if (p.harga_custom != null) prices[p.service_id] = p.harga_custom
+            })
+          }
+          return { ...c, customPrices: prices }
+        })
+        setCustomers(customersWithPrices as any[])
+        console.log('Customers loaded with prices:', data.length)
+      }
+    } catch (err) {
+      console.error('Exception loading customers:', err)
+      await loadCustomers()
+    }
+    setLoading(false)
+  }
+
   const filtered = customers.filter((c) => {
     const q = search.toLowerCase()
     return c.nama.toLowerCase().includes(q) || c.hp.toLowerCase().includes(q)
