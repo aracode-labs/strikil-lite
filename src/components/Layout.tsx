@@ -36,10 +36,14 @@ export default function Layout() {
         </div>
       </header>
 
-      {/* Floating Menu Button (kanan atas) */}
+      {/* Floating Action Button (tengah bawah, naik saat bottom sheet terbuka) */}
       <button
         onClick={() => setMenuOpen(!menuOpen)}
-        className="fixed top-20 right-4 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-orange-600 text-xl text-white shadow-lg hover:bg-orange-700 md:top-4 md:right-4"
+        className={`fixed z-40 flex h-14 w-14 items-center justify-center rounded-full bg-orange-600 text-2xl text-white shadow-lg transition-all duration-300 hover:bg-orange-700 ${
+          menuOpen
+            ? 'bottom-[340px] right-1/2 translate-x-1/2'
+            : 'bottom-6 right-1/2 translate-x-1/2'
+        }`}
         aria-label="Menu"
       >
         {menuOpen ? '✕' : '☰'}
@@ -50,11 +54,11 @@ export default function Layout() {
         <>
           {/* Overlay */}
           <div
-            className="fixed inset-0 z-30 bg-black/50"
+            className="fixed inset-0 z-30 bg-black/50 animate-fade-in"
             onClick={() => setMenuOpen(false)}
           />
           {/* Bottom Sheet */}
-          <div className="fixed inset-x-0 bottom-0 z-40 rounded-t-2xl bg-white shadow-2xl">
+          <div className="fixed inset-x-0 bottom-0 z-40 rounded-t-2xl bg-white shadow-2xl animate-slide-up">
             {/* Handle */}
             <div className="mx-auto mt-3 h-1.5 w-12 rounded-full bg-gray-300" />
             <div className="flex items-center justify-between px-4 py-3">
