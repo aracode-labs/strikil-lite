@@ -236,6 +236,17 @@ export default function EStruk() {
               {formatRupiah(Number(order.total))}
             </span>
           </div>
+          {/* Foto Penimbangan */}
+          {order.foto_penimbangan_url && (
+            <div className="flex flex-col items-center">
+              <span className="text-xs text-gray-500">Foto Penimbangan</span>
+              <img
+                src={order.foto_penimbangan_url}
+                alt="Foto Penimbangan"
+                className="mt-1 h-32 w-32 rounded-lg object-cover"
+              />
+            </div>
+          )}
           {/* Pengantaran */}
           <div className="flex justify-between gap-4">
             <span className="text-gray-500">Pengantaran</span>

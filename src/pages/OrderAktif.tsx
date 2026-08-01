@@ -82,6 +82,17 @@ export default function OrderAktif() {
                 </span>
               </div>
 
+              {/* Foto Penimbangan */}
+              {order.foto_penimbangan_url && (
+                <div className="mt-2 flex justify-center">
+                  <img
+                    src={order.foto_penimbangan_url}
+                    alt="Foto Penimbangan"
+                    className="h-24 w-24 rounded-lg object-cover"
+                  />
+                </div>
+              )}
+
               {/* Pilihan status order */}
               <div className="mt-3 flex flex-wrap gap-2">
                 {statusList.map((s) => (

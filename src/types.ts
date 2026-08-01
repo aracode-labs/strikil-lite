@@ -58,6 +58,8 @@ export interface Order {
   // Kolom pembayaran (migration)
   metode_pembayaran?: PaymentMethod
   status_pembayaran?: PaymentStatus
+  // Kolom foto penimbangan (migration)
+  foto_penimbangan_url?: string | null
 }
 
 export interface Settings {

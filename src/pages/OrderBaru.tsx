@@ -17,6 +17,9 @@ export default function OrderBaru() {
   const [estimasi, setEstimasi] = useState('')
   const [metodePembayaran, setMetodePembayaran] = useState<'cash' | 'qris' | 'transfer'>('cash')
   const [statusPembayaran, setStatusPembayaran] = useState<'belum_bayar' | 'dp' | 'lunas'>('belum_bayar')
+  const [fotoPenimbangan, setFotoPenimbangan] = useState<File | null>(null)
+  const [fotoPreview, setFotoPreview] = useState<string | null>(null)
+  const [uploadingFoto, setUploadingFoto] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [servicesError, setServicesError] = useState(false)
@@ -133,6 +136,29 @@ export default function OrderBaru() {
     setSaving(true)
     setError('')
 
+    let fotoUrl: string | null = null
+
+    // Upload foto penimbangan jika ada
+    if (fotoPenimbangan) {
+      setUploadingFoto(true)
+      const fileExt = fotoPenimbangan.name.split('.').pop()
+      const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('photos')
+        .upload(fileName, fotoPenimbangan)
+
+      setUploadingFoto(false)
+
+      if (uploadError) {
+        setError('Gagal upload foto: ' + uploadError.message)
+        setSaving(false)
+        return
+      }
+
+      const { data: urlData } = supabase.storage.from('photos').getPublicUrl(fileName)
+      fotoUrl = urlData.publicUrl
+    }
+
     const { data, error } = await supabase
       .from('orders')
       .insert({
@@ -153,6 +179,7 @@ export default function OrderBaru() {
         estimasi_selesai: estimasi.trim(),
         metode_pembayaran: metodePembayaran,
         status_pembayaran: statusPembayaran,
+        foto_penimbangan_url: fotoUrl,
       })
       .select()
       .single()
@@ -374,6 +401,29 @@ export default function OrderBaru() {
             </div>
           </>
         )}
+
+        {/* Foto Penimbangan */}
+        <div>
+          <label className="mb-1 block text-sm font-medium text-gray-700">
+            Foto Penimbangan (opsional)
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            capture="environment"
+            onChange={(e) => {
+              const file = e.target.files?.[0] || null
+              setFotoPenimbangan(file)
+              setFotoPreview(file ? URL.createObjectURL(file) : null)
+            }}
+            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-orange-500 focus:outline-none"
+          />
+          {fotoPreview && (
+            <div className="mt-2">
+              <img src={fotoPreview} alt="Preview" className="mx-auto h-32 w-32 rounded-lg object-cover" />
+            </div>
+          )}
+        </div>
 
         {/* Pembayaran */}
         <div>
