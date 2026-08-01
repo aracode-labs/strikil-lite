@@ -5,7 +5,7 @@ import type { Order } from '../types'
 
 const statusColors: Record<string, string> = {
   Diterima: 'bg-gray-100 text-gray-700',
-  Diproses: 'bg-blue-100 text-blue-700',
+  Diproses: 'bg-orange-100 text-orange-700',
   'Siap Diambil': 'bg-orange-100 text-orange-700',
   Selesai: 'bg-green-100 text-green-700',
 }
@@ -59,7 +59,7 @@ export default function Dashboard() {
         </div>
         <div className="rounded-xl bg-white p-4 shadow-sm">
           <p className="text-sm text-gray-500">Diproses</p>
-          <p className="text-2xl font-bold text-blue-600">{diproses}</p>
+          <p className="text-2xl font-bold text-orange-600">{diproses}</p>
         </div>
         <div className="rounded-xl bg-white p-4 shadow-sm">
           <p className="text-sm text-gray-500">Siap Diambil</p>
@@ -72,8 +72,8 @@ export default function Dashboard() {
       </div>
 
       {/* Pendapatan */}
-      <div className="rounded-xl bg-blue-600 p-4 text-white shadow-sm">
-        <p className="text-sm text-blue-100">Pendapatan Hari Ini</p>
+      <div className="rounded-xl bg-orange-600 p-4 text-white shadow-sm">
+        <p className="text-sm text-orange-100">Pendapatan Hari Ini</p>
         <p className="text-3xl font-bold">{formatRupiah(pendapatan)}</p>
       </div>
 
@@ -81,7 +81,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-2 gap-3">
         <Link
           to="/order-baru"
-          className="rounded-xl bg-blue-600 p-4 text-center text-white shadow-sm transition hover:bg-blue-700"
+          className="rounded-xl bg-orange-600 p-4 text-center text-white shadow-sm transition hover:bg-orange-700"
         >
           <span className="text-2xl">➕</span>
           <p className="mt-1 font-semibold">Order Baru</p>

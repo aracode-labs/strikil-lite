@@ -6,7 +6,7 @@ const statusList: OrderStatus[] = ['Diterima', 'Diproses', 'Siap Diambil', 'Sele
 
 const statusColors: Record<string, string> = {
   Diterima: 'bg-gray-100 text-gray-700',
-  Diproses: 'bg-blue-100 text-blue-700',
+  Diproses: 'bg-orange-100 text-orange-700',
   'Siap Diambil': 'bg-orange-100 text-orange-700',
   Selesai: 'bg-green-100 text-green-700',
 }
@@ -89,7 +89,7 @@ export default function OrderAktif() {
                     disabled={updatingId === order.id || s === order.status}
                     className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
                       s === order.status
-                        ? 'bg-blue-600 text-white'
+                        ? 'bg-orange-600 text-white'
                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                     } disabled:opacity-50`}
                   >

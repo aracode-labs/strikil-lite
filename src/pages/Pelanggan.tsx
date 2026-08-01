@@ -213,7 +213,7 @@ export default function Pelanggan() {
         <h2 className="text-xl font-bold text-gray-800">Pelanggan</h2>
         <button
           onClick={() => (showForm ? setShowForm(false) : openAddForm())}
-          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+          className="rounded-lg bg-orange-600 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-700"
         >
           {showForm ? 'Tutup' : '+ Pelanggan Baru'}
         </button>
@@ -245,7 +245,7 @@ export default function Pelanggan() {
             <input
               value={nama}
               onChange={(e) => setNama(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-blue-500 focus:outline-none"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-orange-500 focus:outline-none"
               placeholder="Nama pelanggan"
             />
           </div>
@@ -254,7 +254,7 @@ export default function Pelanggan() {
             <input
               value={hp}
               onChange={(e) => setHp(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-blue-500 focus:outline-none"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-orange-500 focus:outline-none"
               placeholder="08xxxxxxxxxx"
               inputMode="tel"
             />
@@ -264,7 +264,7 @@ export default function Pelanggan() {
             <input
               value={alamat}
               onChange={(e) => setAlamat(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-blue-500 focus:outline-none"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-orange-500 focus:outline-none"
               placeholder="Alamat"
             />
           </div>
@@ -273,7 +273,7 @@ export default function Pelanggan() {
             <input
               value={catatan}
               onChange={(e) => setCatatan(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-blue-500 focus:outline-none"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-orange-500 focus:outline-none"
               placeholder="Catatan (opsional)"
             />
           </div>
@@ -284,7 +284,7 @@ export default function Pelanggan() {
             <input
               value={ongkir}
               onChange={(e) => setOngkir(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-blue-500 focus:outline-none"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-orange-500 focus:outline-none"
               placeholder="0"
               inputMode="numeric"
             />
@@ -318,7 +318,7 @@ export default function Pelanggan() {
                       type="number"
                       value={customPrices[s.id] || ''}
                       onChange={(e) => handleCustomPriceChange(s.id, e.target.value)}
-                      className="w-24 rounded-lg border border-gray-300 px-2 py-1 text-right text-sm focus:border-blue-500 focus:outline-none"
+                      className="w-24 rounded-lg border border-gray-300 px-2 py-1 text-right text-sm focus:border-orange-500 focus:outline-none"
                       placeholder="Default"
                       inputMode="numeric"
                     />
@@ -335,7 +335,7 @@ export default function Pelanggan() {
           <button
             type="submit"
             disabled={saving}
-            className="w-full rounded-lg bg-blue-600 py-3 text-base font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+            className="w-full rounded-lg bg-orange-600 py-3 text-base font-semibold text-white hover:bg-orange-700 disabled:opacity-50"
           >
             {saving ? 'Menyimpan...' : editingId ? 'UPDATE' : 'SIMPAN'}
           </button>
@@ -347,7 +347,7 @@ export default function Pelanggan() {
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base focus:border-blue-500 focus:outline-none"
+          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base focus:border-orange-500 focus:outline-none"
           placeholder="🔍 Cari nama / nomor HP"
         />
       </div>
@@ -385,7 +385,7 @@ export default function Pelanggan() {
                 <div className="ml-2 flex shrink-0 gap-1">
                   <button
                     onClick={() => openEditForm(c)}
-                    className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50"
+                    className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-orange-600 hover:bg-orange-50"
                     title="Edit pelanggan"
                   >
                     ✏️ Edit

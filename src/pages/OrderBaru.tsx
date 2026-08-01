@@ -176,7 +176,7 @@ export default function OrderBaru() {
             setSearch(e.target.value)
             setSelected(null)
           }}
-          className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-blue-500 focus:outline-none"
+          className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-orange-500 focus:outline-none"
           placeholder="🔍 Cari nama / nomor HP"
         />
 
@@ -203,14 +203,14 @@ export default function OrderBaru() {
         )}
 
         {selected && (
-          <div className="mt-2 flex items-center justify-between rounded-lg bg-blue-50 px-3 py-2">
+          <div className="mt-2 flex items-center justify-between rounded-lg bg-orange-50 px-3 py-2">
             <div>
               <p className="font-medium text-gray-900">{selected.nama}</p>
               <p className="text-xs text-gray-500">{selected.hp || '—'}</p>
             </div>
             <button
               onClick={() => setSelected(null)}
-              className="text-sm text-blue-600 hover:underline"
+              className="text-sm text-orange-600 hover:underline"
             >
               Ganti
             </button>
@@ -239,7 +239,7 @@ export default function OrderBaru() {
           {!servicesError && services.length > 0 && (
             <>
               {/* Default: Setrika Reguler */}
-              <div className="mt-2 rounded-lg border-2 border-blue-500 bg-blue-50 p-3">
+              <div className="mt-2 rounded-lg border-2 border-orange-500 bg-orange-50 p-3">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-semibold text-gray-900">
@@ -250,7 +250,7 @@ export default function OrderBaru() {
                       {(selectedService || regulerService)?.satuan_label || 'Kg'}
                     </p>
                   </div>
-                  <span className="text-xs font-medium text-blue-600">Default</span>
+                  <span className="text-xs font-medium text-orange-600">Default</span>
                 </div>
               </div>
 
@@ -284,7 +284,7 @@ export default function OrderBaru() {
                           }}
                           className={`flex items-center justify-between rounded-lg border px-3 py-2.5 text-left transition-all ${
                             selectedService?.id === s.id
-                              ? 'border-blue-500 bg-blue-50'
+                              ? 'border-orange-500 bg-orange-50'
                               : 'border-gray-200 hover:border-gray-300'
                           }`}
                         >
@@ -313,7 +313,7 @@ export default function OrderBaru() {
                           }}
                           className={`flex items-center justify-between rounded-lg border px-3 py-2.5 text-left transition-all ${
                             selectedService?.id === s.id
-                              ? 'border-blue-500 bg-blue-50'
+                              ? 'border-orange-500 bg-orange-50'
                               : 'border-gray-200 hover:border-gray-300'
                           }`}
                         >
@@ -350,7 +350,7 @@ export default function OrderBaru() {
               <input
                 value={jumlah}
                 onChange={(e) => setJumlah(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-blue-500 focus:outline-none"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-orange-500 focus:outline-none"
                 placeholder={selectedService.kategori === 'kiloan' ? '0' : '1'}
                 inputMode="decimal"
                 autoFocus
@@ -364,7 +364,7 @@ export default function OrderBaru() {
               <span className="font-semibold text-gray-900">{formatRupiah(hargaSatuan)}</span>
             </div>
 
-            <div className="flex items-center justify-between rounded-lg bg-blue-600 px-3 py-3 text-white">
+            <div className="flex items-center justify-between rounded-lg bg-orange-600 px-3 py-3 text-white">
               <span className="font-medium">SUBTOTAL</span>
               <span className="text-xl font-bold">{formatRupiah(subtotal)}</span>
             </div>
@@ -383,7 +383,7 @@ export default function OrderBaru() {
               }}
               className={`rounded-lg border px-3 py-2.5 text-sm font-medium transition-all ${
                 pengantaran === 'ditempat'
-                  ? 'border-blue-500 bg-blue-50 text-blue-700'
+                  ? 'border-orange-500 bg-orange-50 text-orange-700'
                   : 'border-gray-200 text-gray-600 hover:border-gray-300'
               }`}
             >
@@ -398,7 +398,7 @@ export default function OrderBaru() {
               }}
               className={`rounded-lg border px-3 py-2.5 text-sm font-medium transition-all ${
                 pengantaran === 'antar_jemput'
-                  ? 'border-blue-500 bg-blue-50 text-blue-700'
+                  ? 'border-orange-500 bg-orange-50 text-orange-700'
                   : 'border-gray-200 text-gray-600 hover:border-gray-300'
               }`}
             >
@@ -415,7 +415,7 @@ export default function OrderBaru() {
               <input
                 value={ongkir}
                 onChange={(e) => setOngkir(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-blue-500 focus:outline-none"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-orange-500 focus:outline-none"
                 placeholder="0"
                 inputMode="numeric"
               />
@@ -438,7 +438,7 @@ export default function OrderBaru() {
               <span className="text-sm text-gray-600">Ongkir</span>
               <span className="font-semibold text-gray-900">{formatRupiah(ongkirNum)}</span>
             </div>
-            <div className="flex items-center justify-between rounded-lg bg-blue-600 px-3 py-3 text-white">
+            <div className="flex items-center justify-between rounded-lg bg-orange-600 px-3 py-3 text-white">
               <span className="font-medium">TOTAL</span>
               <span className="text-xl font-bold">{formatRupiah(total)}</span>
             </div>
@@ -450,7 +450,7 @@ export default function OrderBaru() {
           <input
             value={estimasi}
             onChange={(e) => setEstimasi(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-blue-500 focus:outline-none"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-orange-500 focus:outline-none"
             placeholder="cth: Besok sore"
           />
         </div>
@@ -460,7 +460,7 @@ export default function OrderBaru() {
           <input
             value={catatan}
             onChange={(e) => setCatatan(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-blue-500 focus:outline-none"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-orange-500 focus:outline-none"
             placeholder="Catatan (opsional)"
           />
         </div>
@@ -472,7 +472,7 @@ export default function OrderBaru() {
         <button
           type="submit"
           disabled={saving || !selected || !selectedService}
-          className="w-full rounded-lg bg-blue-600 py-3 text-base font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+          className="w-full rounded-lg bg-orange-600 py-3 text-base font-semibold text-white hover:bg-orange-700 disabled:opacity-50"
         >
           {saving ? 'Menyimpan...' : 'SIMPAN ORDER'}
         </button>

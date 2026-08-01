@@ -72,7 +72,7 @@ export default function Progress() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="mx-auto mb-3 h-10 w-10 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
+          <div className="mx-auto mb-3 h-10 w-10 animate-spin rounded-full border-4 border-orange-200 border-t-orange-600" />
           <p className="text-sm text-gray-500">Memuat progress order...</p>
         </div>
       </div>
@@ -101,12 +101,12 @@ export default function Progress() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-br from-blue-600 to-blue-700 px-6 py-8 text-center text-white">
+      <div className="bg-gradient-to-br from-orange-600 to-orange-700 px-6 py-8 text-center text-white">
         <h1 className="text-2xl font-bold tracking-tight">
           {settings?.nama_toko || 'Strikil'}
         </h1>
-        <p className="mt-0.5 text-sm text-blue-100">Setrika Kiloan Cimahi</p>
-        <p className="mt-1 text-xs text-blue-200">
+        <p className="mt-0.5 text-sm text-orange-100">Setrika Kiloan Cimahi</p>
+        <p className="mt-1 text-xs text-orange-200">
           {settings?.alamat || 'Isatana Gardenia - Adelia 1 no 1.6'}
         </p>
       </div>
@@ -122,7 +122,7 @@ export default function Progress() {
             <span
               className={`rounded-full px-3 py-1 text-xs font-semibold ${
                 order.status === 'Diterima'
-                  ? 'bg-blue-100 text-blue-700'
+                  ? 'bg-orange-100 text-orange-700'
                   : order.status === 'Diproses'
                     ? 'bg-yellow-100 text-yellow-700'
                     : order.status === 'Siap Diambil'
@@ -184,7 +184,7 @@ export default function Progress() {
             )}
             <div className="flex justify-between">
               <span className="text-gray-500">Total</span>
-              <span className="font-bold text-blue-600">{formatRupiah(Number(order.total))}</span>
+              <span className="font-bold text-orange-600">{formatRupiah(Number(order.total))}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-500">Pengantaran</span>
@@ -222,15 +222,15 @@ export default function Progress() {
                     <div
                       className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-lg transition-all ${
                         isDone
-                          ? 'bg-blue-600 text-white'
+                          ? 'bg-orange-600 text-white'
                           : 'bg-gray-100 text-gray-400'
-                      } ${isCurrent ? 'ring-4 ring-blue-100' : ''}`}
+                      } ${isCurrent ? 'ring-4 ring-orange-100' : ''}`}
                     >
                       {isDone ? step.icon : '○'}
                     </div>
                     {!isLast && (
                       <div
-                        className={`my-1 w-0.5 flex-1 ${isDone ? 'bg-blue-600' : 'bg-gray-200'}`}
+                        className={`my-1 w-0.5 flex-1 ${isDone ? 'bg-orange-600' : 'bg-gray-200'}`}
                         style={{ minHeight: '28px' }}
                       />
                     )}
@@ -251,7 +251,7 @@ export default function Progress() {
                       {step.desc}
                     </p>
                     {isCurrent && (
-                      <span className="mt-1 inline-block rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-medium text-blue-600">
+                      <span className="mt-1 inline-block rounded-full bg-orange-50 px-2 py-0.5 text-[10px] font-medium text-orange-600">
                         Status saat ini
                       </span>
                     )}
@@ -271,7 +271,7 @@ export default function Progress() {
         )}
 
         {/* Footer */}
-        <div className="mt-6 rounded-xl bg-blue-50 p-5 text-center">
+        <div className="mt-6 rounded-xl bg-orange-50 p-5 text-center">
           <p className="text-sm font-medium text-gray-700">
             Terima kasih telah menggunakan jasa kami 🙏
           </p>

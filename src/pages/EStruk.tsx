@@ -91,7 +91,7 @@ export default function EStruk() {
   }
 
   const statusColors: Record<string, string> = {
-    Diterima: 'bg-blue-100 text-blue-700',
+    Diterima: 'bg-orange-100 text-orange-700',
     Diproses: 'bg-yellow-100 text-yellow-700',
     'Siap Diambil': 'bg-green-100 text-green-700',
     Selesai: 'bg-gray-100 text-gray-600',
@@ -104,16 +104,16 @@ export default function EStruk() {
       {/* Struk */}
       <div className="estruk-paper mx-auto max-w-sm overflow-hidden rounded-xl bg-white shadow-lg">
         {/* Header */}
-        <div className="estruk-header bg-gradient-to-br from-blue-600 to-blue-700 px-6 py-5 text-center text-white">
+        <div className="estruk-header bg-gradient-to-br from-orange-600 to-orange-700 px-6 py-5 text-center text-white">
           <h3 className="text-2xl font-bold tracking-tight">
             {settings?.nama_toko || 'Strikil'}
           </h3>
-          <p className="mt-0.5 text-sm font-medium text-blue-100">Setrika Kiloan Cimahi</p>
-          <p className="mt-1 text-xs text-blue-200">
+          <p className="mt-0.5 text-sm font-medium text-orange-100">Setrika Kiloan Cimahi</p>
+          <p className="mt-1 text-xs text-orange-200">
             {settings?.alamat || 'Isatana Gardenia - Adelia 1 no 1.6'}
           </p>
           {settings?.no_hp && (
-            <p className="mt-0.5 text-xs text-blue-200">Telp: {settings.no_hp}</p>
+            <p className="mt-0.5 text-xs text-orange-200">Telp: {settings.no_hp}</p>
           )}
         </div>
 
@@ -193,7 +193,7 @@ export default function EStruk() {
           <div className="my-2 border-t border-dashed border-gray-200" />
           <div className="flex justify-between gap-4">
             <span className="text-lg text-gray-700">Total</span>
-            <span className="text-lg font-bold text-blue-600">
+            <span className="text-lg font-bold text-orange-600">
               {formatRupiah(Number(order.total))}
             </span>
           </div>
@@ -238,9 +238,9 @@ export default function EStruk() {
           <p className="mt-1 text-xs text-gray-400">
             Simpan struk ini sebagai bukti pengambilan
           </p>
-          <div className="mt-3 rounded-lg bg-blue-50 px-3 py-2">
-            <p className="text-[10px] uppercase tracking-wider text-blue-400">Lacak Order</p>
-            <p className="break-all text-xs font-medium text-blue-600">{getProgressUrl()}</p>
+          <div className="mt-3 rounded-lg bg-orange-50 px-3 py-2">
+            <p className="text-[10px] uppercase tracking-wider text-orange-400">Lacak Order</p>
+            <p className="break-all text-xs font-medium text-orange-600">{getProgressUrl()}</p>
           </div>
         </div>
       </div>
@@ -256,7 +256,7 @@ export default function EStruk() {
         </button>
         <button
           onClick={copyProgressLink}
-          className="w-full rounded-lg bg-blue-600 py-3 text-base font-semibold text-white hover:bg-blue-700"
+          className="w-full rounded-lg bg-orange-600 py-3 text-base font-semibold text-white hover:bg-orange-700"
         >
           {copied ? '✅ Link Tersalin!' : '🔗 Salin Link Progress'}
         </button>

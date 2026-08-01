@@ -86,7 +86,7 @@ export default function Pengaturan() {
           <input
             value={namaToko}
             onChange={(e) => setNamaToko(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-blue-500 focus:outline-none"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-orange-500 focus:outline-none"
             placeholder="Strikil"
           />
         </div>
@@ -96,7 +96,7 @@ export default function Pengaturan() {
           <input
             value={hargaPerKg}
             onChange={(e) => setHargaPerKg(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-blue-500 focus:outline-none"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-orange-500 focus:outline-none"
             placeholder="7000"
             inputMode="numeric"
           />
@@ -107,7 +107,7 @@ export default function Pengaturan() {
           <input
             value={minimumKg}
             onChange={(e) => setMinimumKg(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-blue-500 focus:outline-none"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-orange-500 focus:outline-none"
             placeholder="2"
             inputMode="decimal"
           />
@@ -118,7 +118,7 @@ export default function Pengaturan() {
           <input
             value={noHp}
             onChange={(e) => setNoHp(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-blue-500 focus:outline-none"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-orange-500 focus:outline-none"
             placeholder="08xxxxxxxxxx"
             inputMode="tel"
           />
@@ -129,7 +129,7 @@ export default function Pengaturan() {
           <input
             value={alamat}
             onChange={(e) => setAlamat(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-blue-500 focus:outline-none"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-orange-500 focus:outline-none"
             placeholder="Alamat usaha"
           />
         </div>
@@ -144,7 +144,7 @@ export default function Pengaturan() {
         <button
           type="submit"
           disabled={saving}
-          className="w-full rounded-lg bg-blue-600 py-3 text-base font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+          className="w-full rounded-lg bg-orange-600 py-3 text-base font-semibold text-white hover:bg-orange-700 disabled:opacity-50"
         >
           {saving ? 'Menyimpan...' : 'SIMPAN'}
         </button>

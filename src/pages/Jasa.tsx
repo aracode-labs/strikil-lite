@@ -117,7 +117,7 @@ export default function Jasa() {
         <h2 className="text-xl font-bold text-gray-800">Jenis Jasa & Tarif</h2>
         <button
           onClick={() => (showForm ? setShowForm(false) : openAddForm())}
-          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+          className="rounded-lg bg-orange-600 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-700"
         >
           {showForm ? 'Tutup' : '+ Jasa Baru'}
         </button>
@@ -149,7 +149,7 @@ export default function Jasa() {
             <input
               value={nama}
               onChange={(e) => setNama(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-blue-500 focus:outline-none"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-orange-500 focus:outline-none"
               placeholder="cth: Setrika Express"
             />
           </div>
@@ -165,7 +165,7 @@ export default function Jasa() {
                 }}
                 className={`rounded-lg border px-3 py-2.5 text-sm font-medium transition-all ${
                   kategori === 'kiloan'
-                    ? 'border-blue-500 bg-blue-50 text-blue-700'
+                    ? 'border-orange-500 bg-orange-50 text-orange-700'
                     : 'border-gray-200 text-gray-600'
                 }`}
               >
@@ -176,7 +176,7 @@ export default function Jasa() {
                 onClick={() => setKategori('satuan')}
                 className={`rounded-lg border px-3 py-2.5 text-sm font-medium transition-all ${
                   kategori === 'satuan'
-                    ? 'border-blue-500 bg-blue-50 text-blue-700'
+                    ? 'border-orange-500 bg-orange-50 text-orange-700'
                     : 'border-gray-200 text-gray-600'
                 }`}
               >
@@ -190,7 +190,7 @@ export default function Jasa() {
             <input
               value={satuanLabel}
               onChange={(e) => setSatuanLabel(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-blue-500 focus:outline-none"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-orange-500 focus:outline-none"
               placeholder="Kg / pcs / meter / set"
             />
           </div>
@@ -200,7 +200,7 @@ export default function Jasa() {
             <input
               value={harga}
               onChange={(e) => setHarga(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-blue-500 focus:outline-none"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-orange-500 focus:outline-none"
               placeholder="0"
               inputMode="numeric"
             />
@@ -213,7 +213,7 @@ export default function Jasa() {
           <button
             type="submit"
             disabled={saving}
-            className="w-full rounded-lg bg-blue-600 py-3 text-base font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+            className="w-full rounded-lg bg-orange-600 py-3 text-base font-semibold text-white hover:bg-orange-700 disabled:opacity-50"
           >
             {saving ? 'Menyimpan...' : editingId ? 'UPDATE' : 'SIMPAN'}
           </button>
@@ -246,7 +246,7 @@ export default function Jasa() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => openEditForm(s)}
-                      className="rounded-lg px-3 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50"
+                      className="rounded-lg px-3 py-1.5 text-xs font-medium text-orange-600 hover:bg-orange-50"
                     >
                       ✏️ Edit
                     </button>
@@ -279,7 +279,7 @@ export default function Jasa() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => openEditForm(s)}
-                      className="rounded-lg px-3 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50"
+                      className="rounded-lg px-3 py-1.5 text-xs font-medium text-orange-600 hover:bg-orange-50"
                     >
                       ✏️ Edit
                     </button>

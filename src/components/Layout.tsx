@@ -24,12 +24,12 @@ export default function Layout() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
-      <header className="sticky top-0 z-20 bg-blue-600 text-white shadow">
+      <header className="sticky top-0 z-20 bg-orange-600 text-white shadow">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
           <h1 className="text-lg font-bold">STRIKIL LITE</h1>
           <button
             onClick={handleLogout}
-            className="rounded-lg bg-blue-700 px-3 py-1.5 text-sm font-medium hover:bg-blue-800"
+            className="rounded-lg bg-orange-700 px-3 py-1.5 text-sm font-medium hover:bg-orange-800"
           >
             Keluar
           </button>
@@ -39,7 +39,7 @@ export default function Layout() {
       {/* Floating Menu Button (kanan atas) */}
       <button
         onClick={() => setMenuOpen(!menuOpen)}
-        className="fixed top-20 right-4 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-xl text-white shadow-lg hover:bg-blue-700 md:top-4 md:right-4"
+        className="fixed top-20 right-4 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-orange-600 text-xl text-white shadow-lg hover:bg-orange-700 md:top-4 md:right-4"
         aria-label="Menu"
       >
         {menuOpen ? '✕' : '☰'}
@@ -47,7 +47,7 @@ export default function Layout() {
 
       {/* Dropdown Menu */}
       {menuOpen && (
-        <nav className="fixed inset-x-0 top-24 z-30 border-t border-blue-500 bg-blue-700 md:left-auto md:right-4 md:top-16 md:w-64 md:rounded-xl md:border">
+        <nav className="fixed inset-x-0 top-24 z-30 border-t border-orange-500 bg-orange-700 md:left-auto md:right-4 md:top-16 md:w-64 md:rounded-xl md:border">
           {navItems.map((item) => (
             <NavLink
               key={item.to}
@@ -56,7 +56,7 @@ export default function Layout() {
               onClick={() => setMenuOpen(false)}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-4 py-3 text-sm font-medium ${
-                  isActive ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-600'
+                  isActive ? 'bg-orange-800 text-white' : 'text-orange-100 hover:bg-orange-600'
                 }`
               }
             >

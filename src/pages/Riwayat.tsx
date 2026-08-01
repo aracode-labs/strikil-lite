@@ -5,7 +5,7 @@ import type { Order } from '../types'
 
 const statusColors: Record<string, string> = {
   Diterima: 'bg-gray-100 text-gray-700',
-  Diproses: 'bg-blue-100 text-blue-700',
+  Diproses: 'bg-orange-100 text-orange-700',
   'Siap Diambil': 'bg-orange-100 text-orange-700',
   Selesai: 'bg-green-100 text-green-700',
 }
@@ -54,7 +54,7 @@ export default function Riwayat() {
       <input
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base focus:border-blue-500 focus:outline-none"
+        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base focus:border-orange-500 focus:outline-none"
         placeholder="🔍 Cari nama / HP / no order"
       />
 
