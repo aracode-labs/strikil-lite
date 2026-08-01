@@ -103,32 +103,40 @@ alter table public.orders enable row level security;
 alter table public.settings enable row level security;
 alter table public.services enable row level security;
 
+drop policy if exists "customers_all_authenticated" on public.customers;
 create policy "customers_all_authenticated" on public.customers
   for all to authenticated using (true) with check (true);
 
+drop policy if exists "orders_all_authenticated" on public.orders;
 create policy "orders_all_authenticated" on public.orders
   for all to authenticated using (true) with check (true);
 
+drop policy if exists "settings_all_authenticated" on public.settings;
 create policy "settings_all_authenticated" on public.settings
   for all to authenticated using (true) with check (true);
 
+drop policy if exists "services_all_authenticated" on public.services;
 create policy "services_all_authenticated" on public.services
   for all to authenticated using (true) with check (true);
 
 -- 7. RLS PUBLIK (untuk halaman Progress - tanpa login)
 -- Customer bisa melihat detail order berdasarkan nomor_order (read-only)
+drop policy if exists "orders_public_read" on public.orders;
 create policy "orders_public_read" on public.orders
   for select to anon, authenticated using (true);
 
 -- Settings bisa dibaca publik (untuk info toko di halaman Progress)
+drop policy if exists "settings_public_read" on public.settings;
 create policy "settings_public_read" on public.settings
   for select to anon, authenticated using (true);
 
 -- Customers bisa dibaca publik (untuk join nama/HP di halaman Progress)
+drop policy if exists "customers_public_read" on public.customers;
 create policy "customers_public_read" on public.customers
   for select to anon, authenticated using (true);
 
 -- Services bisa dibaca publik (untuk info jasa di halaman Progress)
+drop policy if exists "services_public_read" on public.services;
 create policy "services_public_read" on public.services
   for select to anon, authenticated using (true);
 
