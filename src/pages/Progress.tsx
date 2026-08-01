@@ -102,11 +102,11 @@ export default function Progress() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-gradient-to-br from-orange-600 to-orange-700 px-6 py-8 text-center text-white">
-        <img src="/logo.png" alt="Strikil Lite" className="mx-auto mb-2 h-16 w-16 object-contain" />
+        <img src="/logo.png" alt="Strikil Lite" className="mx-auto mb-2 h-16 w-16 rounded-full object-contain" />
         <h1 className="text-2xl font-bold tracking-tight">
-          {settings?.nama_toko || 'Strikil'}
+          {settings?.nama_toko || 'STRIKIL'}
         </h1>
-        <p className="mt-0.5 text-sm text-orange-100">Setrika Kiloan Cimahi</p>
+        <p className="mt-0.5 text-sm text-orange-100">- Setrika Kiloan Cimahi</p>
         <p className="mt-1 text-xs text-orange-200">
           {settings?.alamat || 'Isatana Gardenia - Adelia 1 no 1.6'}
         </p>
