@@ -26,7 +26,7 @@ export default function Layout() {
       {/* Header dengan gradient seamless */}
       <header className="sticky top-0 z-20 bg-gradient-to-r from-orange-600 to-orange-500 text-white shadow">
         <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
-          <h1 className="text-lg font-bold">STRIKIL LITE</h1>
+          <img src="/logo.png" alt="Strikil Lite" className="h-8 w-8 object-contain" />
           <button
             onClick={handleLogout}
             className="rounded-lg bg-orange-700 px-3 py-1.5 text-sm font-medium hover:bg-orange-800"

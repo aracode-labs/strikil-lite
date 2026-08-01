@@ -45,6 +45,7 @@ export default function EStruk() {
     if (!order || !order.customers?.hp) return
     const hp = order.customers.hp.replace(/[^0-9]/g, '')
     const progressUrl = `${window.location.origin}/progress/${order.nomor_order}`
+    const logoUrl = `${window.location.origin}/logo.png`
     const pesan = encodeURIComponent(
       `*${settings?.nama_toko || 'Strikil'}*\n` +
         `Setrika Kiloan Cimahi\n\n` +
@@ -54,6 +55,7 @@ export default function EStruk() {
         `Total: ${formatRupiah(Number(order.total))}\n` +
         `Status: ${order.status}\n` +
         `Estimasi: ${order.estimasi_selesai || '-'}\n\n` +
+        `Logo: ${logoUrl}\n\n` +
         `Lacak progress order Anda:\n${progressUrl}\n\n` +
         `Terima kasih 🙏`
     )
