@@ -147,14 +147,25 @@ export default function EStruk() {
             </div>
           )}
           <div className="my-2 border-t border-dashed border-gray-200" />
+          {/* Jenis Jasa */}
+          {order.service_nama && (
+            <div className="flex justify-between gap-4">
+              <span className="text-gray-500">Jenis Jasa</span>
+              <span className="text-right font-semibold text-gray-900">{order.service_nama}</span>
+            </div>
+          )}
           <div className="flex justify-between gap-4">
-            <span className="text-gray-500">Berat</span>
-            <span className="font-semibold text-gray-900">{order.berat} Kg</span>
+            <span className="text-gray-500">Jumlah</span>
+            <span className="font-semibold text-gray-900">
+              {order.jumlah ?? order.berat} {order.satuan_label ?? 'Kg'}
+            </span>
           </div>
           <div className="flex justify-between gap-4">
-            <span className="text-gray-500">Harga / Kg</span>
+            <span className="text-gray-500">
+              Harga / {order.satuan_label ?? 'Kg'}
+            </span>
             <span className="font-semibold text-gray-900">
-              {formatRupiah(Number(order.harga_perkg))}
+              {formatRupiah(Number(order.harga_satuan ?? order.harga_perkg))}
             </span>
           </div>
           <div className="my-2 border-t border-dashed border-gray-200" />

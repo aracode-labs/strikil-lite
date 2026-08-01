@@ -141,9 +141,17 @@ export default function Progress() {
               <span className="text-gray-500">Nama</span>
               <span className="font-semibold text-gray-900">{order.customers?.nama}</span>
             </div>
+            {order.service_nama && (
+              <div className="flex justify-between">
+                <span className="text-gray-500">Jenis Jasa</span>
+                <span className="text-right font-semibold text-gray-900">{order.service_nama}</span>
+              </div>
+            )}
             <div className="flex justify-between">
-              <span className="text-gray-500">Berat</span>
-              <span className="font-semibold text-gray-900">{order.berat} Kg</span>
+              <span className="text-gray-500">Jumlah</span>
+              <span className="font-semibold text-gray-900">
+                {order.jumlah ?? order.berat} {order.satuan_label ?? 'Kg'}
+              </span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-500">Total</span>

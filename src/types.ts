@@ -9,6 +9,15 @@ export interface Customer {
 
 export type OrderStatus = 'Diterima' | 'Diproses' | 'Siap Diambil' | 'Selesai'
 
+export interface Service {
+  id: string
+  nama: string
+  kategori: 'kiloan' | 'satuan'
+  satuan_label: string
+  harga: number
+  created_at: string
+}
+
 export interface Order {
   id: string
   nomor_order: string
@@ -21,6 +30,13 @@ export interface Order {
   estimasi_selesai: string
   created_at: string
   customers?: Customer
+  // Kolom service (migration)
+  service_id?: string | null
+  service_nama?: string
+  jumlah?: number
+  satuan_label?: string
+  harga_satuan?: number
+  services?: Service
 }
 
 export interface Settings {

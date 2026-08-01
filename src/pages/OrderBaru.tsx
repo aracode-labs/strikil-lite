@@ -1,23 +1,24 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import type { Customer, Settings } from '../types'
+import type { Customer, Service } from '../types'
 
 export default function OrderBaru() {
   const [customers, setCustomers] = useState<Customer[]>([])
+  const [services, setServices] = useState<Service[]>([])
   const [search, setSearch] = useState('')
   const [selected, setSelected] = useState<Customer | null>(null)
-  const [berat, setBerat] = useState('')
+  const [selectedService, setSelectedService] = useState<Service | null>(null)
+  const [jumlah, setJumlah] = useState('')
   const [catatan, setCatatan] = useState('')
   const [estimasi, setEstimasi] = useState('')
-  const [settings, setSettings] = useState<Settings | null>(null)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const navigate = useNavigate()
 
   useEffect(() => {
     loadCustomers()
-    loadSettings()
+    loadServices()
   }, [])
 
   async function loadCustomers() {
@@ -31,15 +32,15 @@ export default function OrderBaru() {
     }
   }
 
-  async function loadSettings() {
+  async function loadServices() {
     const { data, error } = await supabase
-      .from('settings')
+      .from('services')
       .select('*')
-      .eq('id', 1)
-      .single()
+      .order('kategori', { ascending: true })
+      .order('nama', { ascending: true })
 
     if (!error && data) {
-      setSettings(data as Settings)
+      setServices(data as Service[])
     }
   }
 
@@ -48,9 +49,12 @@ export default function OrderBaru() {
     return c.nama.toLowerCase().includes(q) || c.hp.toLowerCase().includes(q)
   })
 
-  const beratNum = parseFloat(berat) || 0
-  const hargaPerKg = settings?.harga_perkg ?? 0
-  const total = beratNum * hargaPerKg
+  const kiloanServices = services.filter((s) => s.kategori === 'kiloan')
+  const satuanServices = services.filter((s) => s.kategori === 'satuan')
+
+  const jumlahNum = parseFloat(jumlah) || 0
+  const hargaSatuan = selectedService?.harga ?? 0
+  const total = jumlahNum * hargaSatuan
 
   const formatRupiah = (n: number) => 'Rp ' + n.toLocaleString('id-ID')
 
@@ -60,8 +64,12 @@ export default function OrderBaru() {
       setError('Pilih pelanggan dulu')
       return
     }
-    if (beratNum <= 0) {
-      setError('Isi berat cucian')
+    if (!selectedService) {
+      setError('Pilih jenis jasa')
+      return
+    }
+    if (jumlahNum <= 0) {
+      setError(`Isi jumlah (${selectedService.satuan_label})`)
       return
     }
     setSaving(true)
@@ -71,8 +79,14 @@ export default function OrderBaru() {
       .from('orders')
       .insert({
         customer_id: selected.id,
-        berat: beratNum,
-        harga_perkg: hargaPerKg,
+        service_id: selectedService.id,
+        service_nama: selectedService.nama,
+        jumlah: jumlahNum,
+        satuan_label: selectedService.satuan_label,
+        harga_satuan: hargaSatuan,
+        // Backward compat: isi kolom lama juga
+        berat: selectedService.kategori === 'kiloan' ? jumlahNum : 0,
+        harga_perkg: hargaSatuan,
         total,
         status: 'Diterima',
         catatan: catatan.trim(),
@@ -88,7 +102,6 @@ export default function OrderBaru() {
       return
     }
 
-    // Pindah ke halaman e-struk dengan id order
     navigate(`/e-struk/${data.id}`)
   }
 
@@ -149,27 +162,95 @@ export default function OrderBaru() {
 
       {/* Form order */}
       <form onSubmit={handleSubmit} className="space-y-3 rounded-xl bg-white p-4 shadow-sm">
+        {/* Pilih Jenis Jasa */}
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">Berat (Kg)</label>
-          <input
-            value={berat}
-            onChange={(e) => setBerat(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-blue-500 focus:outline-none"
-            placeholder="0"
-            inputMode="decimal"
-            autoFocus
-          />
+          <label className="mb-1 block text-sm font-medium text-gray-700">Jenis Jasa</label>
+
+          {/* Kiloan */}
+          <p className="mb-1 mt-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
+            Setrika Kiloan
+          </p>
+          <div className="grid grid-cols-1 gap-1.5">
+            {kiloanServices.map((s) => (
+              <button
+                key={s.id}
+                type="button"
+                onClick={() => {
+                  setSelectedService(s)
+                  setJumlah('')
+                }}
+                className={`flex items-center justify-between rounded-lg border px-3 py-2.5 text-left transition-all ${
+                  selectedService?.id === s.id
+                    ? 'border-blue-500 bg-blue-50'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <span className="text-sm font-medium text-gray-900">{s.nama}</span>
+                <span className="text-sm font-semibold text-gray-600">
+                  {formatRupiah(s.harga)}/{s.satuan_label}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          {/* Satuan */}
+          <p className="mb-1 mt-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
+            Cuci Satuan
+          </p>
+          <div className="grid grid-cols-1 gap-1.5">
+            {satuanServices.map((s) => (
+              <button
+                key={s.id}
+                type="button"
+                onClick={() => {
+                  setSelectedService(s)
+                  setJumlah('')
+                }}
+                className={`flex items-center justify-between rounded-lg border px-3 py-2.5 text-left transition-all ${
+                  selectedService?.id === s.id
+                    ? 'border-blue-500 bg-blue-50'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <span className="text-sm font-medium text-gray-900">{s.nama}</span>
+                <span className="text-sm font-semibold text-gray-600">
+                  {formatRupiah(s.harga)}/{s.satuan_label}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
-          <span className="text-sm text-gray-600">Harga / Kg</span>
-          <span className="font-semibold text-gray-900">{formatRupiah(hargaPerKg)}</span>
-        </div>
+        {/* Jumlah */}
+        {selectedService && (
+          <>
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">
+                Jumlah ({selectedService.satuan_label})
+              </label>
+              <input
+                value={jumlah}
+                onChange={(e) => setJumlah(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-blue-500 focus:outline-none"
+                placeholder={selectedService.kategori === 'kiloan' ? '0' : '1'}
+                inputMode="decimal"
+                autoFocus
+              />
+            </div>
 
-        <div className="flex items-center justify-between rounded-lg bg-blue-600 px-3 py-3 text-white">
-          <span className="font-medium">TOTAL</span>
-          <span className="text-xl font-bold">{formatRupiah(total)}</span>
-        </div>
+            <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
+              <span className="text-sm text-gray-600">
+                Harga / {selectedService.satuan_label}
+              </span>
+              <span className="font-semibold text-gray-900">{formatRupiah(hargaSatuan)}</span>
+            </div>
+
+            <div className="flex items-center justify-between rounded-lg bg-blue-600 px-3 py-3 text-white">
+              <span className="font-medium">TOTAL</span>
+              <span className="text-xl font-bold">{formatRupiah(total)}</span>
+            </div>
+          </>
+        )}
 
         <div>
           <label className="mb-1 block text-sm font-medium text-gray-700">Estimasi Selesai</label>
@@ -197,7 +278,7 @@ export default function OrderBaru() {
 
         <button
           type="submit"
-          disabled={saving || !selected}
+          disabled={saving || !selected || !selectedService}
           className="w-full rounded-lg bg-blue-600 py-3 text-base font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
         >
           {saving ? 'Menyimpan...' : 'SIMPAN ORDER'}

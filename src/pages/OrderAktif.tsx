@@ -65,7 +65,9 @@ export default function OrderAktif() {
                 <div>
                   <p className="font-semibold text-gray-900">{order.customers?.nama}</p>
                   <p className="text-sm text-gray-500">
-                    {order.nomor_order} · {order.berat} Kg · Rp {Number(order.total).toLocaleString('id-ID')}
+                    {order.nomor_order} · {order.service_nama || 'Setrika'} ·{' '}
+                    {order.jumlah ?? order.berat} {order.satuan_label ?? 'Kg'} ·{' '}
+                    Rp {Number(order.total).toLocaleString('id-ID')}
                   </p>
                 </div>
                 <span className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[order.status]}`}>

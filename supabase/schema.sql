@@ -13,24 +13,42 @@ create table if not exists public.customers (
   created_at timestamptz not null default now()
 );
 
--- 2. TABEL ORDERS
+-- 2. TABEL SERVICES (jenis jasa)
+create table if not exists public.services (
+  id uuid primary key default gen_random_uuid(),
+  nama text not null,
+  kategori text not null check (kategori in ('kiloan', 'satuan')),
+  satuan_label text not null default 'Kg',
+  harga numeric(10,2) not null default 0,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists idx_services_kategori on public.services(kategori);
+
+-- 3. TABEL ORDERS
 create table if not exists public.orders (
   id uuid primary key default gen_random_uuid(),
   nomor_order text not null unique,
   customer_id uuid not null references public.customers(id) on delete cascade,
-  berat numeric(10,2) not null,
-  harga_perkg numeric(10,2) not null,
+  berat numeric(10,2) not null default 0,
+  harga_perkg numeric(10,2) not null default 0,
   total numeric(10,2) not null,
   status text not null default 'Diterima' check (status in ('Diterima', 'Diproses', 'Siap Diambil', 'Selesai')),
   catatan text not null default '',
   estimasi_selesai text not null default '',
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  -- Kolom service (migration)
+  service_id uuid references public.services(id),
+  service_nama text not null default '',
+  jumlah numeric(10,2) not null default 0,
+  satuan_label text not null default 'Kg',
+  harga_satuan numeric(10,2) not null default 0
 );
 
 create index if not exists idx_orders_customer on public.orders(customer_id);
 create index if not exists idx_orders_created on public.orders(created_at desc);
 
--- 3. TABEL SETTINGS (hanya 1 baris)
+-- 4. TABEL SETTINGS (hanya 1 baris)
 create table if not exists public.settings (
   id integer primary key default 1 check (id = 1),
   nama_toko text not null default 'Strikil',
@@ -47,7 +65,7 @@ insert into public.settings (id, nama_toko, alamat, no_hp, harga_perkg, minimum_
 values (1, 'Strikil', '', '', 7000, 2)
 on conflict (id) do nothing;
 
--- 4. TRIGGER NOMOR ORDER OTOMATIS
+-- 5. TRIGGER NOMOR ORDER OTOMATIS
 -- Format: SK + YYMMDD + 3 digit urutan  ->  SK250801001
 create or replace function public.generate_nomor_order()
 returns trigger
@@ -73,12 +91,13 @@ create or replace trigger trg_generate_nomor_order
   when (new.nomor_order is null or new.nomor_order = '')
   execute function public.generate_nomor_order();
 
--- 5. RLS (Row Level Security)
+-- 6. RLS (Row Level Security)
 -- Aplikasi internal: hanya user yang login yang bisa mengakses semua data.
 
 alter table public.customers enable row level security;
 alter table public.orders enable row level security;
 alter table public.settings enable row level security;
+alter table public.services enable row level security;
 
 create policy "customers_all_authenticated" on public.customers
   for all to authenticated using (true) with check (true);
@@ -89,7 +108,10 @@ create policy "orders_all_authenticated" on public.orders
 create policy "settings_all_authenticated" on public.settings
   for all to authenticated using (true) with check (true);
 
--- 6. RLS PUBLIK (untuk halaman Progress - tanpa login)
+create policy "services_all_authenticated" on public.services
+  for all to authenticated using (true) with check (true);
+
+-- 7. RLS PUBLIK (untuk halaman Progress - tanpa login)
 -- Customer bisa melihat detail order berdasarkan nomor_order (read-only)
 create policy "orders_public_read" on public.orders
   for select to anon, authenticated using (true);
@@ -101,3 +123,23 @@ create policy "settings_public_read" on public.settings
 -- Customers bisa dibaca publik (untuk join nama/HP di halaman Progress)
 create policy "customers_public_read" on public.customers
   for select to anon, authenticated using (true);
+
+-- Services bisa dibaca publik (untuk info jasa di halaman Progress)
+create policy "services_public_read" on public.services
+  for select to anon, authenticated using (true);
+
+-- 8. SEED DATA SERVICES
+insert into public.services (nama, kategori, satuan_label, harga) values
+  ('Setrika Reguler', 'kiloan', 'Kg', 7000),
+  ('Setrika Express', 'kiloan', 'Kg', 10000),
+  ('Setrika Super Express', 'kiloan', 'Kg', 15000),
+  ('Cuci + Setrika', 'kiloan', 'Kg', 12000),
+  ('Cuci Karpet', 'satuan', 'meter', 15000),
+  ('Cuci Selimut', 'satuan', 'pcs', 20000),
+  ('Cuci Jaket', 'satuan', 'pcs', 20000),
+  ('Cuci Hoodie', 'satuan', 'pcs', 20000),
+  ('Cuci Sweater', 'satuan', 'pcs', 20000),
+  ('Cuci Tas', 'satuan', 'pcs', 25000),
+  ('Cuci Sprei + Sarung Bantal & Guling', 'satuan', 'set', 25000),
+  ('Cuci Handuk', 'satuan', 'pcs', 10000)
+on conflict do nothing;

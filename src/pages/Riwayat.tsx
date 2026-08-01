@@ -78,6 +78,9 @@ export default function Riwayat() {
                   <p className="text-xs text-gray-500">
                     {o.nomor_order} · {formatTanggal(o.created_at)}
                   </p>
+                  <p className="mt-0.5 text-xs text-gray-400">
+                    {o.service_nama || 'Setrika'} · {o.jumlah ?? o.berat} {o.satuan_label ?? 'Kg'}
+                  </p>
                 </div>
                 <div className="text-right">
                   <p className="font-semibold text-gray-900">
