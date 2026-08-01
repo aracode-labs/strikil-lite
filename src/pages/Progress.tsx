@@ -56,6 +56,17 @@ export default function Progress() {
     })
   }
 
+  const paymentLabel: Record<string, string> = {
+    cash: '💵 Cash',
+    qris: '📱 QRIS',
+    transfer: '🏦 Transfer',
+  }
+  const statusPembayaranLabel: Record<string, string> = {
+    belum_bayar: '❌ Belum Bayar',
+    dp: '💰 DP',
+    lunas: '✅ Lunas',
+  }
+
   // Timeline steps
   const steps = [
     { key: 'Diterima', label: 'Diterima', icon: '📥', desc: 'Order diterima oleh toko' },
@@ -186,6 +197,18 @@ export default function Progress() {
             <div className="flex justify-between">
               <span className="text-gray-500">Total</span>
               <span className="font-bold text-orange-600">{formatRupiah(Number(order.total))}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Metode</span>
+              <span className="font-semibold text-gray-900">
+                {paymentLabel[order.metode_pembayaran || 'cash'] || order.metode_pembayaran}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Status Bayar</span>
+              <span className="font-semibold text-gray-900">
+                {statusPembayaranLabel[order.status_pembayaran || 'belum_bayar'] || order.status_pembayaran}
+              </span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-500">Pengantaran</span>

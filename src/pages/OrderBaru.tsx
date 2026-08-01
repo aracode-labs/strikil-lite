@@ -15,6 +15,8 @@ export default function OrderBaru() {
   const [ongkir, setOngkir] = useState('')
   const [catatan, setCatatan] = useState('')
   const [estimasi, setEstimasi] = useState('')
+  const [metodePembayaran, setMetodePembayaran] = useState<'cash' | 'qris' | 'transfer'>('cash')
+  const [statusPembayaran, setStatusPembayaran] = useState<'belum_bayar' | 'dp' | 'lunas'>('belum_bayar')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [servicesError, setServicesError] = useState(false)
@@ -149,6 +151,8 @@ export default function OrderBaru() {
         status: 'Diterima',
         catatan: catatan.trim(),
         estimasi_selesai: estimasi.trim(),
+        metode_pembayaran: metodePembayaran,
+        status_pembayaran: statusPembayaran,
       })
       .select()
       .single()
@@ -370,6 +374,47 @@ export default function OrderBaru() {
             </div>
           </>
         )}
+
+        {/* Pembayaran */}
+        <div>
+          <label className="mb-1 block text-sm font-medium text-gray-700">Metode Pembayaran</label>
+          <div className="grid grid-cols-3 gap-2">
+            {(['cash', 'qris', 'transfer'] as const).map((m) => (
+              <button
+                key={m}
+                type="button"
+                onClick={() => setMetodePembayaran(m)}
+                className={`rounded-lg border px-3 py-2.5 text-sm font-medium transition ${
+                  metodePembayaran === m
+                    ? 'border-orange-500 bg-orange-50 text-orange-700'
+                    : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                }`}
+              >
+                {m === 'cash' ? '💵 Cash' : m === 'qris' ? '📱 QRIS' : '🏦 Transfer'}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="mb-1 block text-sm font-medium text-gray-700">Status Pembayaran</label>
+          <div className="grid grid-cols-3 gap-2">
+            {(['belum_bayar', 'dp', 'lunas'] as const).map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => setStatusPembayaran(s)}
+                className={`rounded-lg border px-3 py-2.5 text-sm font-medium transition ${
+                  statusPembayaran === s
+                    ? 'border-orange-500 bg-orange-50 text-orange-700'
+                    : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                }`}
+              >
+                {s === 'belum_bayar' ? '❌ Belum Bayar' : s === 'dp' ? '💰 DP' : '✅ Lunas'}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* Pengantaran */}
         <div>

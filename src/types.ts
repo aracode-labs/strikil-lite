@@ -11,6 +11,9 @@ export interface Customer {
 
 export type OrderStatus = 'Diterima' | 'Diproses' | 'Siap Diambil' | 'Selesai'
 
+export type PaymentStatus = 'belum_bayar' | 'dp' | 'lunas'
+export type PaymentMethod = 'cash' | 'qris' | 'transfer'
+
 export interface Service {
   id: string
   nama: string
@@ -52,6 +55,9 @@ export interface Order {
   // Kolom pengantaran (migration)
   pengantaran?: 'ditempat' | 'antar_jemput'
   ongkir?: number
+  // Kolom pembayaran (migration)
+  metode_pembayaran?: PaymentMethod
+  status_pembayaran?: PaymentStatus
 }
 
 export interface Settings {

@@ -100,6 +100,17 @@ export default function EStruk() {
     Selesai: 'bg-gray-100 text-gray-600',
   }
 
+  const paymentLabel: Record<string, string> = {
+    cash: '💵 Cash',
+    qris: '📱 QRIS',
+    transfer: '🏦 Transfer',
+  }
+  const statusPembayaranLabel: Record<string, string> = {
+    belum_bayar: '❌ Belum Bayar',
+    dp: '💰 DP',
+    lunas: '✅ Lunas',
+  }
+
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-bold text-gray-800">E-Struk</h2>
@@ -162,6 +173,19 @@ export default function EStruk() {
             </div>
           )}
           <div className="my-2 border-t border-dashed border-gray-200" />
+          {/* Pembayaran */}
+          <div className="flex justify-between gap-4">
+            <span className="text-gray-500">Metode</span>
+            <span className="text-right font-semibold text-gray-900">
+              {paymentLabel[order.metode_pembayaran || 'cash'] || order.metode_pembayaran}
+            </span>
+          </div>
+          <div className="flex justify-between gap-4">
+            <span className="text-gray-500">Status Bayar</span>
+            <span className="text-right font-semibold text-gray-900">
+              {statusPembayaranLabel[order.status_pembayaran || 'belum_bayar'] || order.status_pembayaran}
+            </span>
+          </div>
           {/* Jenis Jasa */}
           {order.service_nama && (
             <div className="flex justify-between gap-4">

@@ -11,6 +11,14 @@ const statusColors: Record<string, string> = {
   Selesai: 'bg-green-100 text-green-700',
 }
 
+const paymentStatusList = ['belum_bayar', 'dp', 'lunas'] as const
+
+const paymentStatusColors: Record<string, string> = {
+  belum_bayar: 'bg-red-100 text-red-700',
+  dp: 'bg-yellow-100 text-yellow-700',
+  lunas: 'bg-green-100 text-green-700',
+}
+
 export default function OrderAktif() {
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
@@ -33,7 +41,7 @@ export default function OrderAktif() {
     setLoading(false)
   }
 
-  async function updateStatus(orderId: string, status: OrderStatus) {
+  async function updateStatus(orderId: string, status: string) {
     setUpdatingId(orderId)
     const { error } = await supabase
       .from('orders')
@@ -80,7 +88,7 @@ export default function OrderAktif() {
                 </span>
               </div>
 
-              {/* Pilihan status */}
+              {/* Pilihan status order */}
               <div className="mt-3 flex flex-wrap gap-2">
                 {statusList.map((s) => (
                   <button
@@ -94,6 +102,24 @@ export default function OrderAktif() {
                     } disabled:opacity-50`}
                   >
                     {s}
+                  </button>
+                ))}
+              </div>
+
+              {/* Pilihan status pembayaran */}
+              <div className="mt-2 flex flex-wrap gap-2">
+                {paymentStatusList.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => updateStatus(order.id, s)}
+                    disabled={updatingId === order.id || s === order.status_pembayaran}
+                    className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+                      s === order.status_pembayaran
+                        ? 'bg-green-600 text-white'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    } disabled:opacity-50`}
+                  >
+                    {s === 'belum_bayar' ? 'Belum Bayar' : s === 'dp' ? 'DP' : 'Lunas'}
                   </button>
                 ))}
               </div>
