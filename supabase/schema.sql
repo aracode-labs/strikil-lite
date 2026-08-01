@@ -97,3 +97,7 @@ create policy "orders_public_read" on public.orders
 -- Settings bisa dibaca publik (untuk info toko di halaman Progress)
 create policy "settings_public_read" on public.settings
   for select to anon, authenticated using (true);
+
+-- Customers bisa dibaca publik (untuk join nama/HP di halaman Progress)
+create policy "customers_public_read" on public.customers
+  for select to anon, authenticated using (true);

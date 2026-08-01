@@ -26,6 +26,14 @@ create policy "settings_public_read"
   to anon, authenticated
   using (true);
 
+-- Policy: customers bisa dibaca publik (anon) - read only
+-- Untuk menampilkan nama & HP customer di halaman Progress (join dari orders)
+create policy "customers_public_read"
+  on public.customers
+  for select
+  to anon, authenticated
+  using (true);
+
 -- Verifikasi: cek policy yang aktif
 select tablename, policyname, cmd, roles
 from pg_policies

@@ -32,7 +32,12 @@ export default function Progress() {
     if (orderRes.error || !orderRes.data) {
       setNotFound(true)
     } else {
-      setOrder(orderRes.data as Order)
+      // Pastikan customers tidak null (RLS bisa block join)
+      const orderData = orderRes.data as Order
+      if (!orderData.customers) {
+        orderData.customers = { nama: '-', hp: '' } as Order['customers']
+      }
+      setOrder(orderData)
     }
     if (!settingsRes.error && settingsRes.data) {
       setSettings(settingsRes.data as Settings)
