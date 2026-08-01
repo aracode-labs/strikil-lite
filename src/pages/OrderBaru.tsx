@@ -9,6 +9,7 @@ export default function OrderBaru() {
   const [search, setSearch] = useState('')
   const [selected, setSelected] = useState<Customer | null>(null)
   const [selectedService, setSelectedService] = useState<Service | null>(null)
+  const [showAllServices, setShowAllServices] = useState(false)
   const [jumlah, setJumlah] = useState('')
   const [pengantaran, setPengantaran] = useState<'ditempat' | 'antar_jemput'>('ditempat')
   const [ongkir, setOngkir] = useState('')
@@ -57,6 +58,15 @@ export default function OrderBaru() {
 
   const kiloanServices = services.filter((s) => s.kategori === 'kiloan')
   const satuanServices = services.filter((s) => s.kategori === 'satuan')
+
+  const regulerService = kiloanServices.find((s) => s.nama === 'Setrika Reguler')
+
+  // Default: Setrika Reguler terpilih otomatis
+  useEffect(() => {
+    if (!selectedService && regulerService) {
+      setSelectedService(regulerService)
+    }
+  }, [regulerService, selectedService])
 
   const jumlahNum = parseFloat(jumlah) || 0
   const hargaSatuan = selectedService?.harga ?? 0
@@ -188,59 +198,108 @@ export default function OrderBaru() {
             </div>
           )}
 
-          {/* Kiloan */}
-          <p className="mb-1 mt-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
-            Setrika Kiloan
-          </p>
-          <div className="grid grid-cols-1 gap-1.5">
-            {kiloanServices.map((s) => (
-              <button
-                key={s.id}
-                type="button"
-                onClick={() => {
-                  setSelectedService(s)
-                  setJumlah('')
-                }}
-                className={`flex items-center justify-between rounded-lg border px-3 py-2.5 text-left transition-all ${
-                  selectedService?.id === s.id
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
-              >
-                <span className="text-sm font-medium text-gray-900">{s.nama}</span>
-                <span className="text-sm font-semibold text-gray-600">
-                  {formatRupiah(s.harga)}/{s.satuan_label}
-                </span>
-              </button>
-            ))}
-          </div>
+          {!servicesError && services.length > 0 && (
+            <>
+              {/* Default: Setrika Reguler */}
+              <div className="mt-2 rounded-lg border-2 border-blue-500 bg-blue-50 p-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">
+                      ✅ {selectedService?.nama || 'Setrika Reguler'}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {formatRupiah((selectedService || regulerService)?.harga || 0)}/
+                      {(selectedService || regulerService)?.satuan_label || 'Kg'}
+                    </p>
+                  </div>
+                  <span className="text-xs font-medium text-blue-600">Default</span>
+                </div>
+              </div>
 
-          {/* Satuan */}
-          <p className="mb-1 mt-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
-            Cuci Satuan
-          </p>
-          <div className="grid grid-cols-1 gap-1.5">
-            {satuanServices.map((s) => (
-              <button
-                key={s.id}
-                type="button"
-                onClick={() => {
-                  setSelectedService(s)
-                  setJumlah('')
-                }}
-                className={`flex items-center justify-between rounded-lg border px-3 py-2.5 text-left transition-all ${
-                  selectedService?.id === s.id
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
-              >
-                <span className="text-sm font-medium text-gray-900">{s.nama}</span>
-                <span className="text-sm font-semibold text-gray-600">
-                  {formatRupiah(s.harga)}/{s.satuan_label}
-                </span>
-              </button>
-            ))}
-          </div>
+              {/* Tombol Lihat Lainnya */}
+              {!showAllServices && (
+                <button
+                  type="button"
+                  onClick={() => setShowAllServices(true)}
+                  className="mt-2 w-full rounded-lg border border-dashed border-gray-300 py-2 text-sm font-medium text-gray-600 hover:border-gray-400 hover:text-gray-800"
+                >
+                  Lihat Jenis Jasa Lainnya ▼
+                </button>
+              )}
+
+              {/* Expand: Semua jenis jasa */}
+              {showAllServices && (
+                <div className="mt-3 space-y-3">
+                  {/* Kiloan */}
+                  <div>
+                    <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-gray-400">
+                      Setrika Kiloan
+                    </p>
+                    <div className="grid grid-cols-1 gap-1.5">
+                      {kiloanServices.map((s) => (
+                        <button
+                          key={s.id}
+                          type="button"
+                          onClick={() => {
+                            setSelectedService(s)
+                            setJumlah('')
+                          }}
+                          className={`flex items-center justify-between rounded-lg border px-3 py-2.5 text-left transition-all ${
+                            selectedService?.id === s.id
+                              ? 'border-blue-500 bg-blue-50'
+                              : 'border-gray-200 hover:border-gray-300'
+                          }`}
+                        >
+                          <span className="text-sm font-medium text-gray-900">{s.nama}</span>
+                          <span className="text-sm font-semibold text-gray-600">
+                            {formatRupiah(s.harga)}/{s.satuan_label}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Satuan */}
+                  <div>
+                    <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-gray-400">
+                      Cuci Satuan
+                    </p>
+                    <div className="grid grid-cols-1 gap-1.5">
+                      {satuanServices.map((s) => (
+                        <button
+                          key={s.id}
+                          type="button"
+                          onClick={() => {
+                            setSelectedService(s)
+                            setJumlah('')
+                          }}
+                          className={`flex items-center justify-between rounded-lg border px-3 py-2.5 text-left transition-all ${
+                            selectedService?.id === s.id
+                              ? 'border-blue-500 bg-blue-50'
+                              : 'border-gray-200 hover:border-gray-300'
+                          }`}
+                        >
+                          <span className="text-sm font-medium text-gray-900">{s.nama}</span>
+                          <span className="text-sm font-semibold text-gray-600">
+                            {formatRupiah(s.harga)}/{s.satuan_label}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Tombol Tutup */}
+                  <button
+                    type="button"
+                    onClick={() => setShowAllServices(false)}
+                    className="w-full rounded-lg border border-dashed border-gray-300 py-2 text-sm font-medium text-gray-600 hover:border-gray-400 hover:text-gray-800"
+                  >
+                    ▲ Tutup Jenis Jasa
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </div>
 
         {/* Jumlah */}
