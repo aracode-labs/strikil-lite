@@ -48,17 +48,35 @@ export default function EStruk() {
     const progressUrl = `${window.location.origin}/progress/${order.nomor_order}`
     const logoUrl = `${window.location.origin}/logo.png`
     const pesan = encodeURIComponent(
-      `*${settings?.nama_toko || 'Strikil'}*\n` +
-        `Setrika Kiloan Cimahi\n\n` +
-        `No Order: ${order.nomor_order}\n` +
-        `Nama: ${order.customers.nama}\n` +
-        `Berat: ${order.berat} Kg\n` +
-        `Total: ${formatRupiah(Number(order.total))}\n` +
-        `Status: ${order.status}\n` +
-        `Estimasi: ${order.estimasi_selesai || '-'}\n\n` +
-        `Logo: ${logoUrl}\n\n` +
-        `Lacak progress order Anda:\n${progressUrl}\n\n` +
-        `Terima kasih 🙏`
+      `*━━━━━━━━━━━━━━━━━━━━━━━━━━━━*\n` +
+        `*${settings?.nama_toko || 'STRIKIL'}*\n` +
+        `Setrika Kiloan Cimahi\n` +
+        `*━━━━━━━━━━━━━━━━━━━━━━━━━━━━*\n\n` +
+        `*📋 DETAIL ORDER*\n` +
+        `No Order: *${order.nomor_order}*\n` +
+        `Nama: *${order.customers.nama}*\n` +
+        `Jasa: *${order.service_nama || 'Setrika'}*\n` +
+        `Jumlah: *${order.jumlah ?? order.berat} ${order.satuan_label ?? 'Kg'}*\n` +
+        `Total: *${formatRupiah(Number(order.total))}*\n\n` +
+        `*💳 PEMBAYARAN*\n` +
+        `Metode: *${paymentLabel[order.metode_pembayaran || 'cash'] || order.metode_pembayaran}*\n` +
+        `Status: *${statusPembayaranLabel[order.status_pembayaran || 'belum_bayar'] || order.status_pembayaran}*\n\n` +
+        `*📦 PENGANTARAN*\n` +
+        `*${order.pengantaran === 'antar_jemput' ? '🛵 Antar Jemput' : '🏪 Di Tempat'}*\n\n` +
+        `*━━━━━━━━━━━━━━━━━━━━━━━━━━━━*\n` +
+        `*🔗 LINK PENTING*\n` +
+        `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+        `📱 *Lacak Progress:*\n` +
+        `${progressUrl}\n\n` +
+        `🖼️ *Foto Penimbangan:*\n` +
+        `${logoUrl}\n\n` +
+        `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+        `*💡 Tindakan:*\n` +
+        `• Lihat Progress: ${progressUrl}\n` +
+        `• Hubungi Kami: https://wa.me/${settings?.no_hp?.replace(/[^0-9]/g, '') || ''}\n\n` +
+        `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+        `Terima kasih 🙏\n` +
+        `*${settings?.nama_toko || 'Strikil'}*`
     )
     window.open(`https://wa.me/${hp}?text=${pesan}`, '_blank')
   }
