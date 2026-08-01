@@ -25,7 +25,7 @@ export default function Layout() {
     <div className="min-h-screen bg-gray-100">
       {/* Header dengan gradient seamless */}
       <header className="sticky top-0 z-20 bg-gradient-to-r from-orange-600 to-orange-500 text-white shadow">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
+        <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
           <h1 className="text-lg font-bold">STRIKIL LITE</h1>
           <button
             onClick={handleLogout}
@@ -98,7 +98,7 @@ export default function Layout() {
       )}
 
       {/* Konten */}
-      <main className="mx-auto max-w-3xl px-4 py-4">
+      <main className="mx-auto max-w-2xl px-4 py-4">
         <Outlet />
       </main>
     </div>
