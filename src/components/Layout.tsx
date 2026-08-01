@@ -23,8 +23,8 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Header */}
-      <header className="sticky top-0 z-20 bg-orange-600 text-white shadow">
+      {/* Header dengan gradient seamless */}
+      <header className="sticky top-0 z-20 bg-gradient-to-r from-orange-600 to-orange-500 text-white shadow">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
           <h1 className="text-lg font-bold">STRIKIL LITE</h1>
           <button
