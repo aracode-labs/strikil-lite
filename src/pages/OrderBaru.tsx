@@ -19,7 +19,6 @@ export default function OrderBaru() {
   const [statusPembayaran, setStatusPembayaran] = useState<'belum_bayar' | 'dp' | 'lunas'>('belum_bayar')
   const [fotoPenimbangan, setFotoPenimbangan] = useState<File | null>(null)
   const [fotoPreview, setFotoPreview] = useState<string | null>(null)
-  const [uploadingFoto, setUploadingFoto] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [servicesError, setServicesError] = useState(false)
@@ -140,14 +139,11 @@ export default function OrderBaru() {
 
     // Upload foto penimbangan jika ada
     if (fotoPenimbangan) {
-      setUploadingFoto(true)
       const fileExt = fotoPenimbangan.name.split('.').pop()
       const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('photos')
         .upload(fileName, fotoPenimbangan)
-
-      setUploadingFoto(false)
 
       if (uploadError) {
         setError('Gagal upload foto: ' + uploadError.message)
