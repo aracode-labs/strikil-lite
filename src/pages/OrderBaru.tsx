@@ -16,6 +16,7 @@ export default function OrderBaru() {
   const [estimasi, setEstimasi] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [servicesError, setServicesError] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -41,8 +42,11 @@ export default function OrderBaru() {
       .order('kategori', { ascending: true })
       .order('nama', { ascending: true })
 
-    if (!error && data) {
+    if (error) {
+      setServicesError(true)
+    } else if (data) {
       setServices(data as Service[])
+      setServicesError(false)
     }
   }
 
@@ -171,6 +175,18 @@ export default function OrderBaru() {
         {/* Pilih Jenis Jasa */}
         <div>
           <label className="mb-1 block text-sm font-medium text-gray-700">Jenis Jasa</label>
+
+          {servicesError && (
+            <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+              ⚠️ Gagal memuat jenis jasa. Jalankan <code>migration_services.sql</code> di Supabase SQL Editor.
+            </div>
+          )}
+
+          {!servicesError && services.length === 0 && (
+            <div className="rounded-lg bg-yellow-50 px-4 py-3 text-sm text-yellow-700">
+              ⏳ Memuat jenis jasa...
+            </div>
+          )}
 
           {/* Kiloan */}
           <p className="mb-1 mt-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
