@@ -10,6 +10,7 @@ export default function EStruk() {
   const [settings, setSettings] = useState<Settings | null>(null)
   const [loading, setLoading] = useState(true)
   const [copied, setCopied] = useState(false)
+  const [logoError, setLogoError] = useState(false)
 
   useEffect(() => {
     loadData()
@@ -107,11 +108,22 @@ export default function EStruk() {
       <div className="estruk-paper mx-auto max-w-sm overflow-hidden rounded-xl bg-white shadow-lg">
         {/* Header */}
         <div className="estruk-header bg-gradient-to-br from-orange-600 to-orange-700 px-6 py-5 text-center text-white">
-          <img src="/logo.png" alt="Strikil Lite" className="mx-auto mb-2 h-16 w-16 rounded-full object-contain" />
-          <h3 className="text-2xl font-bold tracking-tight">
-            {settings?.nama_toko || 'STRIKIL'}
-          </h3>
-          <p className="mt-0.5 text-sm font-medium text-orange-100">- Setrika Kiloan Cimahi</p>
+          {!logoError && (
+            <img
+              src="/logo.png"
+              alt="Strikil Lite"
+              className="mx-auto mb-2 h-16 w-16 rounded-full object-contain"
+              onError={() => setLogoError(true)}
+            />
+          )}
+          {(logoError || !settings?.nama_toko) && (
+            <>
+              <h3 className="text-2xl font-bold tracking-tight">
+                {settings?.nama_toko || 'STRIKIL'}
+              </h3>
+              <p className="mt-0.5 text-sm font-medium text-orange-100">- Setrika Kiloan Cimahi</p>
+            </>
+          )}
           <p className="mt-1 text-xs text-orange-200">
             {settings?.alamat || 'Isatana Gardenia - Adelia 1 no 1.6'}
           </p>
