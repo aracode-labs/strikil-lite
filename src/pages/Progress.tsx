@@ -1,18 +1,33 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import type { Order, Settings } from '../types'
+import type { Order, Settings, Service } from '../types'
 
 export default function Progress() {
   const { nomorOrder } = useParams()
   const [order, setOrder] = useState<Order | null>(null)
   const [settings, setSettings] = useState<Settings | null>(null)
+  const [services, setServices] = useState<Service[]>([])
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
+  const [activeTab, setActiveTab] = useState<'order' | 'services'>('order')
 
   useEffect(() => {
     loadData()
+    loadServices()
   }, [nomorOrder])
+
+  async function loadServices() {
+    const { data, error } = await supabase
+      .from('services')
+      .select('*')
+      .order('kategori', { ascending: true })
+      .order('nama', { ascending: true })
+
+    if (!error && data) {
+      setServices(data as Service[])
+    }
+  }
 
   async function loadData() {
     if (!nomorOrder) {
@@ -283,6 +298,78 @@ export default function Progress() {
                 </div>
               )
             })}
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className="mt-4 rounded-xl bg-white shadow-sm">
+          <div className="flex border-b border-gray-200">
+            <button
+              onClick={() => setActiveTab('order')}
+              className={`flex-1 rounded-t-xl py-3 text-sm font-medium transition ${
+                activeTab === 'order'
+                  ? 'border-b-2 border-orange-600 text-orange-700'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              📋 Info Order
+            </button>
+            <button
+              onClick={() => setActiveTab('services')}
+              className={`flex-1 rounded-t-xl py-3 text-sm font-medium transition ${
+                activeTab === 'services'
+                  ? 'border-b-2 border-orange-600 text-orange-700'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              💰 Daftar Jasa
+            </button>
+          </div>
+
+          <div className="p-4">
+            {activeTab === 'order' && (
+              <div className="space-y-3">
+                <h3 className="text-sm font-bold text-gray-700">Tentang Order Ini</h3>
+                <p className="text-sm text-gray-600">
+                  Order Anda sedang diproses oleh tim Strikil. Anda akan mendapatkan notifikasi WhatsApp saat order siap diambil.
+                </p>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">No. Order</span>
+                    <span className="font-semibold text-gray-900">{order.nomor_order}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Status</span>
+                    <span className="font-semibold text-gray-900">{order.status}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Total</span>
+                    <span className="font-semibold text-gray-900">{formatRupiah(Number(order.total))}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Estimasi</span>
+                    <span className="font-semibold text-gray-900">{order.estimasi_selesai || '-'}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'services' && (
+              <div className="space-y-3">
+                <h3 className="text-sm font-bold text-gray-700">Daftar Jasa Lainnya</h3>
+                <div className="space-y-2">
+                  {services.map((s) => (
+                    <div key={s.id} className="flex items-center justify-between rounded-lg border border-gray-200 px-3 py-2">
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{s.nama}</p>
+                        <p className="text-xs text-gray-500 capitalize">{s.kategori}</p>
+                      </div>
+                      <span className="text-sm font-semibold text-orange-600">{formatRupiah(s.harga)}/{s.satuan_label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
