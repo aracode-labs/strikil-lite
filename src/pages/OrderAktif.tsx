@@ -13,12 +13,6 @@ const statusColors: Record<string, string> = {
 
 const paymentStatusList = ['belum_bayar', 'dp', 'lunas'] as const
 
-const paymentStatusColors: Record<string, string> = {
-  belum_bayar: 'bg-red-100 text-red-700',
-  dp: 'bg-yellow-100 text-yellow-700',
-  lunas: 'bg-green-100 text-green-700',
-}
-
 export default function OrderAktif() {
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
