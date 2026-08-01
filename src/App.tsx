@@ -2,28 +2,14 @@ import { Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { supabase } from './lib/supabase'
 import Login from './pages/Login'
-
-// Layout halaman
-function Layout() {
-  return (
-    <div className="min-h-screen bg-gray-100">
-      <Outlet />
-    </div>
-  )
-}
-
-// Halaman placeholder sementara
-function Placeholder({ title }: { title: string }) {
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      <h1 className="text-2xl font-bold text-gray-800">{title}</h1>
-    </div>
-  )
-}
-
-function DashboardPage() {
-  return <Placeholder title="Dashboard" />
-}
+import Layout from './components/Layout'
+import Dashboard from './pages/Dashboard'
+import Pelanggan from './pages/Pelanggan'
+import OrderBaru from './pages/OrderBaru'
+import EStruk from './pages/EStruk'
+import OrderAktif from './pages/OrderAktif'
+import Riwayat from './pages/Riwayat'
+import Pengaturan from './pages/Pengaturan'
 
 function RedirectIfAuthed() {
   const [loading, setLoading] = useState(true)
@@ -65,7 +51,13 @@ export default function App() {
       </Route>
       <Route element={<RequireAuth />}>
         <Route element={<Layout />}>
-          <Route path="/" element={<DashboardPage />} />
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/order-baru" element={<OrderBaru />} />
+          <Route path="/order-aktif" element={<OrderAktif />} />
+          <Route path="/riwayat" element={<Riwayat />} />
+          <Route path="/pelanggan" element={<Pelanggan />} />
+          <Route path="/pengaturan" element={<Pengaturan />} />
+          <Route path="/e-struk/:id" element={<EStruk />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
