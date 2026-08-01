@@ -7,6 +7,7 @@ export default function Pelanggan() {
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
   const [nama, setNama] = useState('')
   const [hp, setHp] = useState('')
   const [alamat, setAlamat] = useState('')
@@ -35,6 +36,30 @@ export default function Pelanggan() {
     return c.nama.toLowerCase().includes(q) || c.hp.toLowerCase().includes(q)
   })
 
+  function resetForm() {
+    setNama('')
+    setHp('')
+    setAlamat('')
+    setCatatan('')
+    setEditingId(null)
+    setError('')
+  }
+
+  function openAddForm() {
+    resetForm()
+    setShowForm(true)
+  }
+
+  function openEditForm(c: Customer) {
+    setEditingId(c.id)
+    setNama(c.nama)
+    setHp(c.hp)
+    setAlamat(c.alamat)
+    setCatatan(c.catatan)
+    setShowForm(true)
+    setError('')
+  }
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     if (!nama.trim()) {
@@ -44,12 +69,21 @@ export default function Pelanggan() {
     setSaving(true)
     setError('')
 
-    const { error } = await supabase.from('customers').insert({
+    const payload = {
       nama: nama.trim(),
       hp: hp.trim(),
       alamat: alamat.trim(),
       catatan: catatan.trim(),
-    })
+    }
+
+    let error = null
+    if (editingId) {
+      // UPDATE
+      ;({ error } = await supabase.from('customers').update(payload).eq('id', editingId))
+    } else {
+      // CREATE
+      ;({ error } = await supabase.from('customers').insert(payload))
+    }
 
     setSaving(false)
 
@@ -58,11 +92,22 @@ export default function Pelanggan() {
       return
     }
 
-    setNama('')
-    setHp('')
-    setAlamat('')
-    setCatatan('')
+    resetForm()
     setShowForm(false)
+    loadCustomers()
+  }
+
+  async function handleDelete(c: Customer) {
+    const yakin = confirm(`Hapus pelanggan "${c.nama}"? Tindakan ini tidak bisa dibatalkan.`)
+    if (!yakin) return
+
+    const { error } = await supabase.from('customers').delete().eq('id', c.id)
+
+    if (error) {
+      alert('Gagal menghapus: ' + error.message)
+      return
+    }
+
     loadCustomers()
   }
 
@@ -71,16 +116,34 @@ export default function Pelanggan() {
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-gray-800">Pelanggan</h2>
         <button
-          onClick={() => setShowForm(!showForm)}
+          onClick={() => (showForm ? setShowForm(false) : openAddForm())}
           className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
         >
           {showForm ? 'Tutup' : '+ Pelanggan Baru'}
         </button>
       </div>
 
-      {/* Form tambah */}
+      {/* Form tambah / edit */}
       {showForm && (
         <form onSubmit={handleSubmit} className="space-y-3 rounded-xl bg-white p-4 shadow-sm">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-bold text-gray-700">
+              {editingId ? '✏️ Edit Pelanggan' : '➕ Pelanggan Baru'}
+            </h3>
+            {editingId && (
+              <button
+                type="button"
+                onClick={() => {
+                  resetForm()
+                  setShowForm(false)
+                }}
+                className="text-xs text-gray-400 hover:text-gray-600"
+              >
+                Batal edit
+              </button>
+            )}
+          </div>
+
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-700">Nama *</label>
             <input
@@ -128,7 +191,7 @@ export default function Pelanggan() {
             disabled={saving}
             className="w-full rounded-lg bg-blue-600 py-3 text-base font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
           >
-            {saving ? 'Menyimpan...' : 'SIMPAN'}
+            {saving ? 'Menyimpan...' : editingId ? 'UPDATE' : 'SIMPAN'}
           </button>
         </form>
       )}
@@ -154,8 +217,30 @@ export default function Pelanggan() {
         <div className="space-y-2">
           {filtered.map((c) => (
             <div key={c.id} className="rounded-xl bg-white p-4 shadow-sm">
-              <p className="font-semibold text-gray-900">{c.nama}</p>
-              <p className="text-sm text-gray-500">{c.hp || '—'}</p>
+              <div className="flex items-start justify-between">
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold text-gray-900">{c.nama}</p>
+                  <p className="text-sm text-gray-500">{c.hp || '—'}</p>
+                  {c.alamat && <p className="mt-0.5 text-xs text-gray-400">📍 {c.alamat}</p>}
+                  {c.catatan && <p className="mt-0.5 text-xs text-gray-400">📝 {c.catatan}</p>}
+                </div>
+                <div className="ml-2 flex shrink-0 gap-1">
+                  <button
+                    onClick={() => openEditForm(c)}
+                    className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50"
+                    title="Edit pelanggan"
+                  >
+                    ✏️ Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(c)}
+                    className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
+                    title="Hapus pelanggan"
+                  >
+                    🗑️ Hapus
+                  </button>
+                </div>
+              </div>
             </div>
           ))}
         </div>
