@@ -34,8 +34,8 @@ export default function Login() {
       <div className="w-full max-w-sm">
         <div className="rounded-2xl bg-white p-8 shadow-sm">
           <div className="mb-6 text-center">
-            <h1 className="text-2xl font-bold text-gray-900">STRIKIL LITE</h1>
-            <p className="mt-1 text-sm text-gray-500">Setrika Kiloan Cimahi</p>
+            <img src="/logo.png" alt="Strikil Lite" className="mx-auto h-16 w-16 object-contain" />
+            <p className="mt-2 text-sm font-semibold text-gray-700">Setrika Kiloan Cimahi</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">

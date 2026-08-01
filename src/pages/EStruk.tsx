@@ -105,6 +105,7 @@ export default function EStruk() {
       <div className="estruk-paper mx-auto max-w-sm overflow-hidden rounded-xl bg-white shadow-lg">
         {/* Header */}
         <div className="estruk-header bg-gradient-to-br from-orange-600 to-orange-700 px-6 py-5 text-center text-white">
+          <img src="/logo.png" alt="Strikil Lite" className="mx-auto mb-2 h-16 w-16 object-contain" />
           <h3 className="text-2xl font-bold tracking-tight">
             {settings?.nama_toko || 'Strikil'}
           </h3>

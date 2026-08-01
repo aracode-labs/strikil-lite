@@ -102,6 +102,7 @@ export default function Progress() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-gradient-to-br from-orange-600 to-orange-700 px-6 py-8 text-center text-white">
+        <img src="/logo.png" alt="Strikil Lite" className="mx-auto mb-2 h-16 w-16 object-contain" />
         <h1 className="text-2xl font-bold tracking-tight">
           {settings?.nama_toko || 'Strikil'}
         </h1>
