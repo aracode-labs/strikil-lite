@@ -12,6 +12,7 @@ export default function Pelanggan() {
   const [hp, setHp] = useState('')
   const [alamat, setAlamat] = useState('')
   const [catatan, setCatatan] = useState('')
+  const [ongkir, setOngkir] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
@@ -41,6 +42,7 @@ export default function Pelanggan() {
     setHp('')
     setAlamat('')
     setCatatan('')
+    setOngkir('')
     setEditingId(null)
     setError('')
   }
@@ -56,6 +58,7 @@ export default function Pelanggan() {
     setHp(c.hp)
     setAlamat(c.alamat)
     setCatatan(c.catatan)
+    setOngkir(c.ongkir ? String(c.ongkir) : '')
     setShowForm(true)
     setError('')
   }
@@ -74,6 +77,7 @@ export default function Pelanggan() {
       hp: hp.trim(),
       alamat: alamat.trim(),
       catatan: catatan.trim(),
+      ongkir: parseFloat(ongkir) || 0,
     }
 
     let error = null
@@ -181,6 +185,21 @@ export default function Pelanggan() {
               placeholder="Catatan (opsional)"
             />
           </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Ongkir Default (Rp)
+            </label>
+            <input
+              value={ongkir}
+              onChange={(e) => setOngkir(e.target.value)}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-blue-500 focus:outline-none"
+              placeholder="0"
+              inputMode="numeric"
+            />
+            <p className="mt-1 text-xs text-gray-400">
+              Tarif ongkir untuk antar jemput (opsional)
+            </p>
+          </div>
 
           {error && (
             <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
@@ -223,6 +242,11 @@ export default function Pelanggan() {
                   <p className="text-sm text-gray-500">{c.hp || '—'}</p>
                   {c.alamat && <p className="mt-0.5 text-xs text-gray-400">📍 {c.alamat}</p>}
                   {c.catatan && <p className="mt-0.5 text-xs text-gray-400">📝 {c.catatan}</p>}
+                  {c.ongkir > 0 && (
+                    <p className="mt-0.5 text-xs text-gray-400">
+                      🛵 Ongkir: Rp {c.ongkir.toLocaleString('id-ID')}
+                    </p>
+                  )}
                 </div>
                 <div className="ml-2 flex shrink-0 gap-1">
                   <button

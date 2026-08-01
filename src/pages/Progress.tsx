@@ -153,9 +153,31 @@ export default function Progress() {
                 {order.jumlah ?? order.berat} {order.satuan_label ?? 'Kg'}
               </span>
             </div>
+            {order.pengantaran === 'antar_jemput' && (
+              <>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Subtotal</span>
+                  <span className="font-semibold text-gray-900">
+                    {formatRupiah(Number(order.total) - Number(order.ongkir ?? 0))}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">🛵 Ongkir</span>
+                  <span className="font-semibold text-gray-900">
+                    {formatRupiah(Number(order.ongkir ?? 0))}
+                  </span>
+                </div>
+              </>
+            )}
             <div className="flex justify-between">
               <span className="text-gray-500">Total</span>
               <span className="font-bold text-blue-600">{formatRupiah(Number(order.total))}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Pengantaran</span>
+              <span className="font-semibold text-gray-900">
+                {order.pengantaran === 'antar_jemput' ? '🛵 Antar Jemput' : '🏪 Di Tempat'}
+              </span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-500">Tanggal Masuk</span>

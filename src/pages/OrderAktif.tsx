@@ -69,6 +69,11 @@ export default function OrderAktif() {
                     {order.jumlah ?? order.berat} {order.satuan_label ?? 'Kg'} ·{' '}
                     Rp {Number(order.total).toLocaleString('id-ID')}
                   </p>
+                  {order.pengantaran === 'antar_jemput' && (
+                    <p className="mt-0.5 text-xs text-orange-600">
+                      🛵 Antar Jemput
+                    </p>
+                  )}
                 </div>
                 <span className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[order.status]}`}>
                   {order.status}

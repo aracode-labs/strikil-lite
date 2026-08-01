@@ -10,6 +10,8 @@ export default function OrderBaru() {
   const [selected, setSelected] = useState<Customer | null>(null)
   const [selectedService, setSelectedService] = useState<Service | null>(null)
   const [jumlah, setJumlah] = useState('')
+  const [pengantaran, setPengantaran] = useState<'ditempat' | 'antar_jemput'>('ditempat')
+  const [ongkir, setOngkir] = useState('')
   const [catatan, setCatatan] = useState('')
   const [estimasi, setEstimasi] = useState('')
   const [saving, setSaving] = useState(false)
@@ -54,7 +56,9 @@ export default function OrderBaru() {
 
   const jumlahNum = parseFloat(jumlah) || 0
   const hargaSatuan = selectedService?.harga ?? 0
-  const total = jumlahNum * hargaSatuan
+  const ongkirNum = parseFloat(ongkir) || 0
+  const subtotal = jumlahNum * hargaSatuan
+  const total = pengantaran === 'antar_jemput' ? subtotal + ongkirNum : subtotal
 
   const formatRupiah = (n: number) => 'Rp ' + n.toLocaleString('id-ID')
 
@@ -84,6 +88,8 @@ export default function OrderBaru() {
         jumlah: jumlahNum,
         satuan_label: selectedService.satuan_label,
         harga_satuan: hargaSatuan,
+        pengantaran,
+        ongkir: pengantaran === 'antar_jemput' ? ongkirNum : 0,
         // Backward compat: isi kolom lama juga
         berat: selectedService.kategori === 'kiloan' ? jumlahNum : 0,
         harga_perkg: hargaSatuan,
@@ -245,6 +251,80 @@ export default function OrderBaru() {
               <span className="font-semibold text-gray-900">{formatRupiah(hargaSatuan)}</span>
             </div>
 
+            <div className="flex items-center justify-between rounded-lg bg-blue-600 px-3 py-3 text-white">
+              <span className="font-medium">SUBTOTAL</span>
+              <span className="text-xl font-bold">{formatRupiah(subtotal)}</span>
+            </div>
+          </>
+        )}
+
+        {/* Pengantaran */}
+        <div>
+          <label className="mb-1 block text-sm font-medium text-gray-700">Pengantaran</label>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                setPengantaran('ditempat')
+                setOngkir('')
+              }}
+              className={`rounded-lg border px-3 py-2.5 text-sm font-medium transition-all ${
+                pengantaran === 'ditempat'
+                  ? 'border-blue-500 bg-blue-50 text-blue-700'
+                  : 'border-gray-200 text-gray-600 hover:border-gray-300'
+              }`}
+            >
+              🏪 Di Tempat
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setPengantaran('antar_jemput')
+                // Auto-isi ongkir dari data pelanggan
+                setOngkir(selected?.ongkir ? String(selected.ongkir) : '')
+              }}
+              className={`rounded-lg border px-3 py-2.5 text-sm font-medium transition-all ${
+                pengantaran === 'antar_jemput'
+                  ? 'border-blue-500 bg-blue-50 text-blue-700'
+                  : 'border-gray-200 text-gray-600 hover:border-gray-300'
+              }`}
+            >
+              🛵 Antar Jemput
+            </button>
+          </div>
+        </div>
+
+        {/* Ongkir */}
+        {pengantaran === 'antar_jemput' && (
+          <>
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">Ongkir (Rp)</label>
+              <input
+                value={ongkir}
+                onChange={(e) => setOngkir(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-blue-500 focus:outline-none"
+                placeholder="0"
+                inputMode="numeric"
+              />
+              {selected?.ongkir ? (
+                <p className="mt-1 text-xs text-gray-400">
+                  Ongkir default pelanggan: {formatRupiah(selected.ongkir)}
+                </p>
+              ) : (
+                <p className="mt-1 text-xs text-gray-400">
+                  Belum ada ongkir default untuk pelanggan ini
+                </p>
+              )}
+            </div>
+
+            <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
+              <span className="text-sm text-gray-600">Subtotal</span>
+              <span className="font-semibold text-gray-900">{formatRupiah(subtotal)}</span>
+            </div>
+            <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
+              <span className="text-sm text-gray-600">Ongkir</span>
+              <span className="font-semibold text-gray-900">{formatRupiah(ongkirNum)}</span>
+            </div>
             <div className="flex items-center justify-between rounded-lg bg-blue-600 px-3 py-3 text-white">
               <span className="font-medium">TOTAL</span>
               <span className="text-xl font-bold">{formatRupiah(total)}</span>

@@ -170,9 +170,31 @@ export default function EStruk() {
           </div>
           <div className="my-2 border-t border-dashed border-gray-200" />
           <div className="flex justify-between gap-4">
+            <span className="text-gray-500">Subtotal</span>
+            <span className="font-semibold text-gray-900">
+              {formatRupiah(Number(order.total) - Number(order.ongkir ?? 0))}
+            </span>
+          </div>
+          {order.pengantaran === 'antar_jemput' && (
+            <div className="flex justify-between gap-4">
+              <span className="text-gray-500">🛵 Ongkir</span>
+              <span className="font-semibold text-gray-900">
+                {formatRupiah(Number(order.ongkir ?? 0))}
+              </span>
+            </div>
+          )}
+          <div className="my-2 border-t border-dashed border-gray-200" />
+          <div className="flex justify-between gap-4">
             <span className="text-lg text-gray-700">Total</span>
             <span className="text-lg font-bold text-blue-600">
               {formatRupiah(Number(order.total))}
+            </span>
+          </div>
+          {/* Pengantaran */}
+          <div className="flex justify-between gap-4">
+            <span className="text-gray-500">Pengantaran</span>
+            <span className="font-semibold text-gray-900">
+              {order.pengantaran === 'antar_jemput' ? '🛵 Antar Jemput' : '🏪 Di Tempat'}
             </span>
           </div>
           <div className="my-2 border-t border-dashed border-gray-200" />

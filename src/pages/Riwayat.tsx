@@ -80,6 +80,7 @@ export default function Riwayat() {
                   </p>
                   <p className="mt-0.5 text-xs text-gray-400">
                     {o.service_nama || 'Setrika'} · {o.jumlah ?? o.berat} {o.satuan_label ?? 'Kg'}
+                    {o.pengantaran === 'antar_jemput' && ' · 🛵 Antar Jemput'}
                   </p>
                 </div>
                 <div className="text-right">

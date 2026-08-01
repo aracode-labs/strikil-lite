@@ -10,6 +10,7 @@ create table if not exists public.customers (
   hp text not null default '',
   alamat text not null default '',
   catatan text not null default '',
+  ongkir numeric(10,2) not null default 0,
   created_at timestamptz not null default now()
 );
 
@@ -42,7 +43,10 @@ create table if not exists public.orders (
   service_nama text not null default '',
   jumlah numeric(10,2) not null default 0,
   satuan_label text not null default 'Kg',
-  harga_satuan numeric(10,2) not null default 0
+  harga_satuan numeric(10,2) not null default 0,
+  -- Kolom pengantaran
+  pengantaran text not null default 'ditempat' check (pengantaran in ('ditempat', 'antar_jemput')),
+  ongkir numeric(10,2) not null default 0
 );
 
 create index if not exists idx_orders_customer on public.orders(customer_id);

@@ -4,6 +4,7 @@ export interface Customer {
   hp: string
   alamat: string
   catatan: string
+  ongkir: number
   created_at: string
 }
 
@@ -37,6 +38,9 @@ export interface Order {
   satuan_label?: string
   harga_satuan?: number
   services?: Service
+  // Kolom pengantaran (migration)
+  pengantaran?: 'ditempat' | 'antar_jemput'
+  ongkir?: number
 }
 
 export interface Settings {
