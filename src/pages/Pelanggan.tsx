@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { supabase } from '../lib/supabase'
-import type { Customer } from '../types'
+import type { Customer, Service } from '../types'
 
 export default function Pelanggan() {
   const [customers, setCustomers] = useState<Customer[]>([])
@@ -16,26 +16,70 @@ export default function Pelanggan() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [loadError, setLoadError] = useState('')
+  const [services, setServices] = useState<Service[]>([])
+  const [customPrices, setCustomPrices] = useState<Record<string, number>>({})
 
   useEffect(() => {
     loadCustomers()
+    loadServices()
   }, [])
 
   async function loadCustomers() {
     setLoadError('')
+    try {
+      const { data, error } = await supabase
+        .from('customers')
+        .select('*, customer_service_prices(service_id, harga_custom)')
+        .order('nama', { ascending: true })
+
+      if (error) {
+        if (error.message.includes('customer_service_prices') || error.code === '42P01') {
+          console.warn('Tabel customer_service_prices belum ada, fallback')
+          await loadCustomersFallback()
+          return
+        }
+        setLoadError(error.message)
+        console.error('Error loading customers:', error)
+      } else if (data) {
+        const customersWithPrices = data.map((c: any) => {
+          const prices: Record<string, number> = {}
+          if (c.customer_service_prices) {
+            c.customer_service_prices.forEach((p: any) => {
+              if (p.harga_custom != null) prices[p.service_id] = p.harga_custom
+            })
+          }
+          return { ...c, customPrices: prices }
+        })
+        setCustomers(customersWithPrices as any[])
+      }
+    } catch (err) {
+      console.error('Exception loading customers:', err)
+      await loadCustomersFallback()
+    }
+    setLoading(false)
+  }
+
+  async function loadCustomersFallback() {
     const { data, error } = await supabase
       .from('customers')
       .select('*')
       .order('nama', { ascending: true })
 
-    if (error) {
-      setLoadError(error.message)
-      console.error('Error loading customers:', error)
-    } else if (data) {
+    if (!error && data) {
       setCustomers(data as Customer[])
-      console.log('Customers loaded:', data.length)
     }
-    setLoading(false)
+  }
+
+  async function loadServices() {
+    const { data, error } = await supabase
+      .from('services')
+      .select('*')
+      .order('kategori', { ascending: true })
+      .order('nama', { ascending: true })
+
+    if (!error && data) {
+      setServices(data as Service[])
+    }
   }
 
   async function loadCustomersWithPrices() {
@@ -102,6 +146,11 @@ export default function Pelanggan() {
     setAlamat(c.alamat)
     setCatatan(c.catatan)
     setOngkir(c.ongkir ? String(c.ongkir) : '')
+    if (c.customPrices) {
+      setCustomPrices(c.customPrices)
+    } else {
+      setCustomPrices({})
+    }
     setShowForm(true)
     setError('')
   }
@@ -132,16 +181,53 @@ export default function Pelanggan() {
       ;({ error } = await supabase.from('customers').insert(payload))
     }
 
-    setSaving(false)
-
     if (error) {
       setError(error.message)
+      setSaving(false)
       return
     }
 
+    // Save custom prices jika ada jasa yang diisi
+    if (editingId && Object.keys(customPrices).length > 0) {
+      await saveCustomPrices(editingId)
+    }
+
+    setSaving(false)
     resetForm()
     setShowForm(false)
     loadCustomers()
+  }
+
+  async function saveCustomPrices(customerId: string) {
+    const { data: servicesData } = await supabase.from('services').select('id')
+
+    if (!servicesData) return
+
+    for (const service of servicesData) {
+      const harga = customPrices[service.id]
+      const { error } = await supabase
+        .from('customer_service_prices')
+        .upsert(
+          {
+            customer_id: customerId,
+            service_id: service.id,
+            harga_custom: harga || null,
+          },
+          { onConflict: 'customer_id,service_id' }
+        )
+
+      if (error) {
+        console.error('Error saving custom price:', error)
+      }
+    }
+  }
+
+  function handleCustomPriceChange(serviceId: string, value: string) {
+    const num = parseFloat(value)
+    setCustomPrices((prev) => ({
+      ...prev,
+      [serviceId]: isNaN(num) ? 0 : num,
+    }))
   }
 
   async function handleDelete(c: Customer) {
@@ -243,6 +329,41 @@ export default function Pelanggan() {
               Tarif ongkir untuk antar jemput (opsional)
             </p>
           </div>
+
+          {/* Tarif Custom per Jasa */}
+          {services.length > 0 && (
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">
+                Tarif Custom per Jasa (Rp)
+              </label>
+              <p className="mb-1 text-xs text-gray-400">
+                Kosongkan untuk menggunakan harga default
+              </p>
+              <div className="max-h-48 space-y-2 overflow-y-auto">
+                {services.map((s) => (
+                  <div
+                    key={s.id}
+                    className="flex items-center justify-between rounded-lg border border-gray-200 px-3 py-2"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium text-gray-900">{s.nama}</p>
+                      <p className="text-xs text-gray-400">
+                        Default: Rp {s.harga.toLocaleString('id-ID')}/{s.satuan_label}
+                      </p>
+                    </div>
+                    <input
+                      type="number"
+                      value={customPrices[s.id] || ''}
+                      onChange={(e) => handleCustomPriceChange(s.id, e.target.value)}
+                      className="w-24 rounded-lg border border-gray-300 px-2 py-1 text-right text-sm focus:border-blue-500 focus:outline-none"
+                      placeholder="Default"
+                      inputMode="numeric"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {error && (
             <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
