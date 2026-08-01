@@ -9,6 +9,7 @@ export default function EStruk() {
   const [order, setOrder] = useState<Order | null>(null)
   const [settings, setSettings] = useState<Settings | null>(null)
   const [loading, setLoading] = useState(true)
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     loadData()
@@ -43,18 +44,38 @@ export default function EStruk() {
   function handleWhatsApp() {
     if (!order || !order.customers?.hp) return
     const hp = order.customers.hp.replace(/[^0-9]/g, '')
+    const progressUrl = `${window.location.origin}/progress/${order.nomor_order}`
     const pesan = encodeURIComponent(
       `*${settings?.nama_toko || 'Strikil'}*\n` +
-        `Setrika Kiloan\n\n` +
+        `Setrika Kiloan Cimahi\n\n` +
         `No Order: ${order.nomor_order}\n` +
         `Nama: ${order.customers.nama}\n` +
         `Berat: ${order.berat} Kg\n` +
         `Total: ${formatRupiah(Number(order.total))}\n` +
         `Status: ${order.status}\n` +
         `Estimasi: ${order.estimasi_selesai || '-'}\n\n` +
+        `Lacak progress order Anda:\n${progressUrl}\n\n` +
         `Terima kasih 🙏`
     )
     window.open(`https://wa.me/${hp}?text=${pesan}`, '_blank')
+  }
+
+  function getProgressUrl() {
+    if (!order) return ''
+    return `${window.location.origin}/progress/${order.nomor_order}`
+  }
+
+  async function copyProgressLink() {
+    const url = getProgressUrl()
+    if (!url) return
+    try {
+      await navigator.clipboard.writeText(url)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // fallback: select text
+      window.prompt('Salin link ini:', url)
+    }
   }
 
   if (loading) {
@@ -69,82 +90,145 @@ export default function EStruk() {
     )
   }
 
+  const statusColors: Record<string, string> = {
+    Diterima: 'bg-blue-100 text-blue-700',
+    Diproses: 'bg-yellow-100 text-yellow-700',
+    'Siap Diambil': 'bg-green-100 text-green-700',
+    Selesai: 'bg-gray-100 text-gray-600',
+  }
+
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-bold text-gray-800">E-Struk</h2>
 
       {/* Struk */}
-      <div className="rounded-xl bg-white p-6 shadow-sm">
-        <div className="border-b-2 border-dashed border-gray-300 pb-4 text-center">
-          <h3 className="text-xl font-bold text-gray-900">{settings?.nama_toko || 'Strikil'}</h3>
-          <p className="text-sm text-gray-500">Setrika Kiloan Cimahi</p>
-          {settings?.alamat && <p className="text-xs text-gray-400">{settings.alamat}</p>}
-        </div>
-
-        <div className="space-y-2 py-4 text-sm">
-          <div className="flex justify-between">
-            <span className="text-gray-500">No Order</span>
-            <span className="font-semibold text-gray-900">{order.nomor_order}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-500">Nama</span>
-            <span className="font-semibold text-gray-900">{order.customers?.nama}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-500">Berat</span>
-            <span className="font-semibold text-gray-900">{order.berat} Kg</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-500">Harga / Kg</span>
-            <span className="font-semibold text-gray-900">{formatRupiah(Number(order.harga_perkg))}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-500">Total</span>
-            <span className="font-bold text-gray-900">{formatRupiah(Number(order.total))}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-500">Status</span>
-            <span className="font-semibold text-gray-900">{order.status}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-500">Tanggal Masuk</span>
-            <span className="font-semibold text-gray-900">{formatTanggal(order.created_at)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-500">Estimasi Selesai</span>
-            <span className="font-semibold text-gray-900">{order.estimasi_selesai || '-'}</span>
-          </div>
-          {order.catatan && (
-            <div className="flex justify-between">
-              <span className="text-gray-500">Catatan</span>
-              <span className="font-semibold text-gray-900">{order.catatan}</span>
-            </div>
+      <div className="estruk-paper mx-auto max-w-sm overflow-hidden rounded-xl bg-white shadow-lg">
+        {/* Header */}
+        <div className="estruk-header bg-gradient-to-br from-blue-600 to-blue-700 px-6 py-5 text-center text-white">
+          <h3 className="text-2xl font-bold tracking-tight">
+            {settings?.nama_toko || 'Strikil'}
+          </h3>
+          <p className="mt-0.5 text-sm font-medium text-blue-100">Setrika Kiloan Cimahi</p>
+          <p className="mt-1 text-xs text-blue-200">
+            {settings?.alamat || 'Isatana Gardenia - Adelia 1 no 1.6'}
+          </p>
+          {settings?.no_hp && (
+            <p className="mt-0.5 text-xs text-blue-200">Telp: {settings.no_hp}</p>
           )}
         </div>
 
-        <div className="border-t-2 border-dashed border-gray-300 pt-4 text-center text-xs text-gray-400">
-          Terima kasih telah menggunakan jasa kami 🙏
+        {/* Nomor Order Banner */}
+        <div className="flex items-center justify-between border-b border-dashed border-gray-300 px-6 py-3">
+          <div>
+            <p className="text-[10px] uppercase tracking-wider text-gray-400">No. Order</p>
+            <p className="text-lg font-bold text-gray-900">{order.nomor_order}</p>
+          </div>
+          <span
+            className={`rounded-full px-3 py-1 text-xs font-semibold ${
+              statusColors[order.status] || 'bg-gray-100 text-gray-600'
+            }`}
+          >
+            {order.status}
+          </span>
+        </div>
+
+        {/* Detail */}
+        <div className="space-y-2.5 px-6 py-4 text-sm">
+          <div className="flex justify-between gap-4">
+            <span className="text-gray-500">Nama</span>
+            <span className="text-right font-semibold text-gray-900">
+              {order.customers?.nama}
+            </span>
+          </div>
+          {order.customers?.hp && (
+            <div className="flex justify-between gap-4">
+              <span className="text-gray-500">No. HP</span>
+              <span className="font-semibold text-gray-900">{order.customers.hp}</span>
+            </div>
+          )}
+          <div className="my-2 border-t border-dashed border-gray-200" />
+          <div className="flex justify-between gap-4">
+            <span className="text-gray-500">Berat</span>
+            <span className="font-semibold text-gray-900">{order.berat} Kg</span>
+          </div>
+          <div className="flex justify-between gap-4">
+            <span className="text-gray-500">Harga / Kg</span>
+            <span className="font-semibold text-gray-900">
+              {formatRupiah(Number(order.harga_perkg))}
+            </span>
+          </div>
+          <div className="my-2 border-t border-dashed border-gray-200" />
+          <div className="flex justify-between gap-4">
+            <span className="text-lg text-gray-700">Total</span>
+            <span className="text-lg font-bold text-blue-600">
+              {formatRupiah(Number(order.total))}
+            </span>
+          </div>
+          <div className="my-2 border-t border-dashed border-gray-200" />
+          <div className="flex justify-between gap-4">
+            <span className="text-gray-500">Tanggal Masuk</span>
+            <span className="text-right font-semibold text-gray-900">
+              {formatTanggal(order.created_at)}
+            </span>
+          </div>
+          <div className="flex justify-between gap-4">
+            <span className="text-gray-500">Estimasi Selesai</span>
+            <span className="text-right font-semibold text-gray-900">
+              {order.estimasi_selesai || '-'}
+            </span>
+          </div>
+          {order.catatan && (
+            <>
+              <div className="my-2 border-t border-dashed border-gray-200" />
+              <div>
+                <p className="text-gray-500">Catatan</p>
+                <p className="mt-0.5 rounded-lg bg-gray-50 px-3 py-2 text-xs text-gray-700">
+                  {order.catatan}
+                </p>
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="border-t-2 border-dashed border-gray-300 px-6 py-4 text-center">
+          <p className="text-sm font-medium text-gray-700">
+            Terima kasih telah menggunakan jasa kami 🙏
+          </p>
+          <p className="mt-1 text-xs text-gray-400">
+            Simpan struk ini sebagai bukti pengambilan
+          </p>
+          <div className="mt-3 rounded-lg bg-blue-50 px-3 py-2">
+            <p className="text-[10px] uppercase tracking-wider text-blue-400">Lacak Order</p>
+            <p className="break-all text-xs font-medium text-blue-600">{getProgressUrl()}</p>
+          </div>
         </div>
       </div>
 
       {/* Aksi */}
-      <div className="space-y-2">
+      <div className="estruk-actions mx-auto max-w-sm space-y-2">
         <button
           onClick={handleWhatsApp}
           disabled={!order.customers?.hp}
           className="w-full rounded-lg bg-green-600 py-3 text-base font-semibold text-white hover:bg-green-700 disabled:opacity-50"
         >
-          Kirim WhatsApp
+          📱 Kirim WhatsApp
+        </button>
+        <button
+          onClick={copyProgressLink}
+          className="w-full rounded-lg bg-blue-600 py-3 text-base font-semibold text-white hover:bg-blue-700"
+        >
+          {copied ? '✅ Link Tersalin!' : '🔗 Salin Link Progress'}
         </button>
         <button
           onClick={() => window.print()}
           className="w-full rounded-lg bg-gray-600 py-3 text-base font-semibold text-white hover:bg-gray-700"
         >
-          Download PDF
+         ️ Download PDF
         </button>
         <button
           onClick={() => navigate('/order-aktif')}
-          className="w-full rounded-lg bg-blue-600 py-3 text-base font-semibold text-white hover:bg-blue-700"
+          className="w-full rounded-lg border border-gray-300 bg-white py-3 text-base font-semibold text-gray-700 hover:bg-gray-50"
         >
           Selesai
         </button>

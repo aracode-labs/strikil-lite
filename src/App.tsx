@@ -10,6 +10,7 @@ import EStruk from './pages/EStruk'
 import OrderAktif from './pages/OrderAktif'
 import Riwayat from './pages/Riwayat'
 import Pengaturan from './pages/Pengaturan'
+import Progress from './pages/Progress'
 
 function RedirectIfAuthed() {
   const [loading, setLoading] = useState(true)
@@ -46,6 +47,9 @@ function RequireAuth() {
 export default function App() {
   return (
     <Routes>
+      {/* Route publik: lacak progress order (tanpa login) */}
+      <Route path="/progress/:nomorOrder" element={<Progress />} />
+
       <Route element={<RedirectIfAuthed />}>
         <Route path="/login" element={<Login />} />
       </Route>

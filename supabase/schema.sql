@@ -88,3 +88,12 @@ create policy "orders_all_authenticated" on public.orders
 
 create policy "settings_all_authenticated" on public.settings
   for all to authenticated using (true) with check (true);
+
+-- 6. RLS PUBLIK (untuk halaman Progress - tanpa login)
+-- Customer bisa melihat detail order berdasarkan nomor_order (read-only)
+create policy "orders_public_read" on public.orders
+  for select to anon, authenticated using (true);
+
+-- Settings bisa dibaca publik (untuk info toko di halaman Progress)
+create policy "settings_public_read" on public.settings
+  for select to anon, authenticated using (true);

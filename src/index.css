@@ -1,1 +1,32 @@
 @import "tailwindcss";
+
+/* ============================================
+   Print styles untuk E-Struk
+   Saat print/PDF, hanya struk yang tampil
+   ============================================ */
+@media print {
+  /* Sembunyikan header, nav, dan tombol aksi */
+  header,
+  nav,
+  .estruk-actions {
+    display: none !important;
+  }
+
+  /* Struk tampil penuh tanpa shadow */
+  .estruk-paper {
+    box-shadow: none !important;
+    max-width: 100% !important;
+    border: 1px solid #e5e7eb;
+  }
+
+  /* Background putih untuk print */
+  body {
+    background: white !important;
+  }
+
+  /* Pastikan header struk tetap berwarna */
+  .estruk-header {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
