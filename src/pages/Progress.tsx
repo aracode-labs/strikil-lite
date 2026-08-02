@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import { supabase, getLogoUrl } from '../lib/supabase'
 import type { Order, Settings, Service } from '../types'
 
 export default function Progress() {
@@ -128,7 +128,7 @@ export default function Progress() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-gradient-to-br from-orange-600 to-orange-700 px-6 py-8 text-center text-white">
-        <img src="/logo.png" alt="Strikil Lite" className="mx-auto mb-2 h-16 w-16 rounded-full object-contain" />
+        <img src={getLogoUrl()} alt="Strikil Lite" className="mx-auto mb-2 h-16 w-16 rounded-full object-contain" />
         <h1 className="text-2xl font-bold tracking-tight">
           {settings?.nama_toko || 'STRIKIL'}
         </h1>

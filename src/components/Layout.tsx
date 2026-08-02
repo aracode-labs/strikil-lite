@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import { supabase, getLogoUrl } from '../lib/supabase'
 import {
   LayoutDashboard,
   PlusCircle,
@@ -64,7 +64,7 @@ export default function Layout() {
                 <ArrowLeft size={20} />
               </button>
             )}
-            <img src="/logo.png" alt="Strikil Lite" className="h-8 w-8 rounded-full object-contain" />
+            <img src={getLogoUrl()} alt="Strikil Lite" className="h-8 w-8 rounded-full object-contain" />
             <span className="text-sm font-bold leading-tight">STRIKIL<br/>Setrika Kiloan Cimahi</span>
           </div>
           {!isDashboard && (

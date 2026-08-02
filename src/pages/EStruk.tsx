@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import { supabase, getLogoUrl } from '../lib/supabase'
 import type { Order, Settings } from '../types'
 
 export default function EStruk() {
@@ -131,7 +131,7 @@ export default function EStruk() {
         <div className="estruk-header bg-gradient-to-br from-orange-600 to-orange-700 px-6 py-5 text-center text-white">
           {!logoError && (
             <img
-              src="/logo.png"
+              src={getLogoUrl()}
               alt="Strikil Lite"
               className="mx-auto mb-2 h-16 w-16 rounded-full object-contain"
               onError={() => setLogoError(true)}

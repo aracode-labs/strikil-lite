@@ -11,3 +11,9 @@ export const supabase = createClient(
   supabaseUrl || 'https://placeholder.supabase.co',
   supabaseAnonKey || 'placeholder-anon-key'
 )
+
+// Helper: ambil URL logo dari Supabase Storage bucket 'photos'
+export function getLogoUrl() {
+  const { data } = supabase.storage.from('photos').getPublicUrl('logo.png')
+  return data.publicUrl
+}

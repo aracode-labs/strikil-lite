@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import { supabase, getLogoUrl } from '../lib/supabase'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -34,7 +34,7 @@ export default function Login() {
       <div className="w-full max-w-sm">
         <div className="rounded-2xl bg-white p-8 shadow-sm">
           <div className="mb-6 text-center">
-            <img src="/logo.png" alt="Strikil Lite" className="mx-auto h-16 w-16 rounded-full object-contain" />
+            <img src={getLogoUrl()} alt="Strikil Lite" className="mx-auto h-16 w-16 rounded-full object-contain" />
             <p className="mt-2 text-sm font-bold text-gray-800">STRIKIL - Setrika Kiloan Cimahi</p>
           </div>
 
