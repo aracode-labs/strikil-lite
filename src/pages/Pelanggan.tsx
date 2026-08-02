@@ -13,7 +13,12 @@ export default function Pelanggan() {
   const [alamat, setAlamat] = useState('')
   const [catatan, setCatatan] = useState('')
   const [ongkir, setOngkir] = useState('')
+  const [deposit, setDeposit] = useState('')
   const [saving, setSaving] = useState(false)
+  const [depositModal, setDepositModal] = useState<Customer | null>(null)
+  const [depositAmount, setDepositAmount] = useState('')
+  const [depositSaving, setDepositSaving] = useState(false)
+  const [depositError, setDepositError] = useState('')
   const [error, setError] = useState('')
   const [loadError, setLoadError] = useState('')
   const [services, setServices] = useState<Service[]>([])
@@ -93,6 +98,7 @@ export default function Pelanggan() {
     setAlamat('')
     setCatatan('')
     setOngkir('')
+    setDeposit('')
     setEditingId(null)
     setError('')
   }
@@ -109,6 +115,7 @@ export default function Pelanggan() {
     setAlamat(c.alamat)
     setCatatan(c.catatan)
     setOngkir(c.ongkir ? String(c.ongkir) : '')
+    setDeposit(c.deposit ? String(c.deposit) : '')
     if (c.customPrices) {
       setCustomPrices(c.customPrices)
     } else {
@@ -133,6 +140,7 @@ export default function Pelanggan() {
       alamat: alamat.trim(),
       catatan: catatan.trim(),
       ongkir: parseFloat(ongkir) || 0,
+      deposit: parseFloat(deposit) || 0,
     }
 
     let error = null
@@ -204,6 +212,66 @@ export default function Pelanggan() {
       return
     }
 
+    loadCustomers()
+  }
+
+  async function handleTopUp() {
+    if (!depositModal) return
+    const amount = parseFloat(depositAmount)
+    if (!amount || amount <= 0) {
+      setDepositError('Masukkan jumlah yang valid')
+      return
+    }
+    setDepositSaving(true)
+    setDepositError('')
+
+    const newDeposit = (depositModal.deposit || 0) + amount
+    const { error } = await supabase
+      .from('customers')
+      .update({ deposit: newDeposit })
+      .eq('id', depositModal.id)
+
+    setDepositSaving(false)
+
+    if (error) {
+      setDepositError(error.message)
+      return
+    }
+
+    setDepositModal(null)
+    loadCustomers()
+  }
+
+  async function handleKurangi() {
+    if (!depositModal) return
+    const amount = parseFloat(depositAmount)
+    if (!amount || amount <= 0) {
+      setDepositError('Masukkan jumlah yang valid')
+      return
+    }
+    setDepositSaving(true)
+    setDepositError('')
+
+    const newDeposit = (depositModal.deposit || 0) - amount
+    if (newDeposit < 0) {
+      setDepositError('Deposit tidak bisa negatif')
+      setDepositSaving(false)
+      return
+    }
+
+    const { error } = await supabase
+      .from('customers')
+      .update({ deposit: newDeposit })
+      .eq('id', depositModal.id)
+
+    setDepositSaving(false)
+
+    if (error) {
+      setDepositError(error.message)
+      return
+    }
+
+    setDepositModal(null)
     loadCustomers()
   }
 
@@ -290,6 +358,21 @@ export default function Pelanggan() {
             />
             <p className="mt-1 text-xs text-gray-400">
               Tarif ongkir untuk antar jemput (opsional)
+            </p>
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              💰 Deposit (Rp)
+            </label>
+            <input
+              value={deposit}
+              onChange={(e) => setDeposit(e.target.value)}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-orange-500 focus:outline-none"
+              placeholder="0"
+              inputMode="numeric"
+            />
+            <p className="mt-1 text-xs text-gray-400">
+              Saldo deposit pelanggan, akan dipotong otomatis saat order
             </p>
           </div>
 
@@ -381,26 +464,105 @@ export default function Pelanggan() {
                       🛵 Ongkir: Rp {c.ongkir.toLocaleString('id-ID')}
                     </p>
                   )}
+                  <p className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-semibold ${c.deposit > 0 ? 'bg-green-50 text-green-700' : 'bg-gray-50 text-gray-500'}`}>
+                    💰 Deposit: {c.deposit ? 'Rp ' + c.deposit.toLocaleString('id-ID') : 'Rp 0'}
+                  </p>
                 </div>
-                <div className="ml-2 flex shrink-0 gap-1">
+                <div className="ml-2 flex shrink-0 flex-col items-end gap-1">
                   <button
-                    onClick={() => openEditForm(c)}
-                    className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-orange-600 hover:bg-orange-50"
-                    title="Edit pelanggan"
+                    onClick={() => {
+                      setDepositModal(c)
+                      setDepositAmount('')
+                      setDepositError('')
+                    }}
+                    className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-green-600 hover:bg-green-50"
+                    title="Kelola deposit"
                   >
-                    ✏️ Edit
+                    💰 Deposit
                   </button>
-                  <button
-                    onClick={() => handleDelete(c)}
-                    className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
-                    title="Hapus pelanggan"
-                  >
-                    🗑️ Hapus
-                  </button>
+                  <div className="flex gap-1">
+                    <button
+                      onClick={() => openEditForm(c)}
+                      className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-orange-600 hover:bg-orange-50"
+                      title="Edit pelanggan"
+                    >
+                      ✏️ Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(c)}
+                      className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
+                      title="Hapus pelanggan"
+                    >
+                      🗑️ Hapus
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Modal Deposit */}
+      {depositModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-sm rounded-xl bg-white p-5 shadow-2xl">
+            <div className="mb-3 flex items-center justify-between">
+              <h3 className="text-sm font-bold text-gray-800">💰 Kelola Deposit</h3>
+              <button
+                onClick={() => setDepositModal(null)}
+                className="rounded-lg p-1 text-gray-400 hover:bg-gray-100"
+                aria-label="Tutup"
+              >
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="mb-3 rounded-lg bg-green-50 px-4 py-3">
+              <p className="text-xs text-green-600">Saldo Deposit Saat Ini</p>
+              <p className="text-xl font-bold text-green-700">
+                Rp {(depositModal.deposit || 0).toLocaleString('id-ID')}
+              </p>
+            </div>
+
+            <div className="mb-3">
+              <label className="mb-1 block text-sm font-medium text-gray-700">
+                Jumlah (Rp)
+              </label>
+              <input
+                value={depositAmount}
+                onChange={(e) => setDepositAmount(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-base focus:border-green-500 focus:outline-none"
+                placeholder="0"
+                inputMode="numeric"
+              />
+            </div>
+
+            {depositError && (
+              <div className="mb-3 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+                {depositError}
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                onClick={handleTopUp}
+                disabled={depositSaving}
+                className="rounded-lg bg-green-600 py-2.5 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
+              >
+                {depositSaving ? 'Simpan...' : '➕ Tambah'}
+              </button>
+              <button
+                onClick={handleKurangi}
+                disabled={depositSaving}
+                className="rounded-lg bg-red-600 py-2.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+              >
+                {depositSaving ? 'Simpan...' : '➖ Kurangi'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

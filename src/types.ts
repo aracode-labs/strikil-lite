@@ -5,6 +5,7 @@ export interface Customer {
   alamat: string
   catatan: string
   ongkir: number
+  deposit: number
   created_at: string
   customPrices?: Record<string, number>
 }

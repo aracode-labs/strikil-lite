@@ -38,7 +38,7 @@ export default function Progress() {
     const [orderRes, settingsRes] = await Promise.all([
       supabase
         .from('orders')
-        .select('*, customers(nama, hp)')
+        .select('*, customers(nama, hp, deposit)')
         .eq('nomor_order', nomorOrder)
         .single(),
       supabase.from('settings').select('*').eq('id', 1).single(),
@@ -219,6 +219,14 @@ export default function Progress() {
                 {paymentLabel[order.metode_pembayaran || 'cash'] || order.metode_pembayaran}
               </span>
             </div>
+            {order.customers?.deposit !== undefined && (
+              <div className="flex justify-between rounded-lg bg-green-50 px-3 py-2">
+                <span className="text-green-700">💰 Sisa Deposit</span>
+                <span className="font-bold text-green-700">
+                  Rp {Number(order.customers.deposit || 0).toLocaleString('id-ID')}
+                </span>
+              </div>
+            )}
             <div className="flex justify-between">
               <span className="text-gray-500">Status Bayar</span>
               <span className="font-semibold text-gray-900">

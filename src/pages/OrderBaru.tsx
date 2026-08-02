@@ -17,6 +17,7 @@ export default function OrderBaru() {
   const [estimasi, setEstimasi] = useState('')
   const [metodePembayaran, setMetodePembayaran] = useState<'cash' | 'qris' | 'transfer'>('cash')
   const [statusPembayaran, setStatusPembayaran] = useState<'belum_bayar' | 'dp' | 'lunas'>('belum_bayar')
+  const [pakaiDeposit, setPakaiDeposit] = useState(false)
   const [fotoPenimbangan, setFotoPenimbangan] = useState<File | null>(null)
   const [fotoPreview, setFotoPreview] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
@@ -155,6 +156,7 @@ export default function OrderBaru() {
       fotoUrl = urlData.publicUrl
     }
 
+    // Insert order
     const { data, error } = await supabase
       .from('orders')
       .insert({
@@ -174,7 +176,7 @@ export default function OrderBaru() {
         catatan: catatan.trim(),
         estimasi_selesai: estimasi.trim(),
         metode_pembayaran: metodePembayaran,
-        status_pembayaran: statusPembayaran,
+        status_pembayaran: pakaiDeposit ? 'lunas' : statusPembayaran,
         foto_penimbangan_url: fotoUrl,
       })
       .select()
@@ -185,6 +187,13 @@ export default function OrderBaru() {
     if (error) {
       setError(error.message)
       return
+    }
+
+    // Jika memakai deposit, kurangi saldo deposit pelanggan
+    if (pakaiDeposit && selected) {
+      const currentDeposit = Number(selected.deposit || 0)
+      const newDeposit = Math.max(0, currentDeposit - total)
+      await supabase.from('customers').update({ deposit: newDeposit }).eq('id', selected.id)
     }
 
     navigate(`/e-struk/${data.id}`)
@@ -478,10 +487,13 @@ export default function OrderBaru() {
                 key={s}
                 type="button"
                 onClick={() => setStatusPembayaran(s)}
+                disabled={pakaiDeposit}
                 className={`rounded-lg border px-3 py-2.5 text-sm font-medium transition ${
-                  statusPembayaran === s
-                    ? 'border-orange-500 bg-orange-50 text-orange-700'
-                    : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                  pakaiDeposit
+                    ? 'opacity-50'
+                    : statusPembayaran === s
+                      ? 'border-orange-500 bg-orange-50 text-orange-700'
+                      : 'border-gray-200 text-gray-600 hover:border-gray-300'
                 }`}
               >
                 {s === 'belum_bayar' ? '❌ Belum Bayar' : s === 'dp' ? '💰 DP' : '✅ Lunas'}
@@ -489,6 +501,38 @@ export default function OrderBaru() {
             ))}
           </div>
         </div>
+
+        {/* Pakai Deposit */}
+        {selected && Number(selected.deposit || 0) > 0 && (
+          <div className="rounded-lg border border-green-200 bg-green-50 p-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-semibold text-green-800">💰 Pakai Deposit</p>
+                <p className="text-xs text-green-600">
+                  Saldo deposit: Rp {(selected.deposit || 0).toLocaleString('id-ID')}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPakaiDeposit(!pakaiDeposit)}
+                className={`relative h-6 w-11 rounded-full transition ${pakaiDeposit ? 'bg-green-600' : 'bg-gray-300'}`}
+                aria-label="Toggle deposit"
+              >
+                <span
+                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${
+                    pakaiDeposit ? 'left-[22px]' : 'left-0.5'
+                  }`}
+                />
+              </button>
+            </div>
+            {pakaiDeposit && (
+              <div className="mt-2 flex items-center justify-between rounded-lg bg-white px-3 py-2 text-sm">
+                <span className="text-gray-600">Potong dari deposit</span>
+                <span className="font-bold text-green-700">{formatRupiah(total)}</span>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Pengantaran */}
         <div>
