@@ -1,6 +1,19 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { supabase } from '../lib/supabase'
 import type { Customer, Service } from '../types'
+import {
+  Phone,
+  MapPin,
+  StickyNote,
+  Bike,
+  Wallet,
+  Pencil,
+  Trash2,
+  X,
+  Plus,
+  Minus,
+  Search,
+} from 'lucide-react'
 
 export default function Pelanggan() {
   const [customers, setCustomers] = useState<Customer[]>([])
@@ -426,12 +439,13 @@ export default function Pelanggan() {
       )}
 
       {/* Pencarian */}
-      <div>
+      <div className="relative">
+        <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base focus:border-orange-500 focus:outline-none"
-          placeholder="🔍 Cari nama / nomor HP"
+          className="w-full rounded-lg border border-gray-300 bg-white py-3 pl-10 pr-4 text-base focus:border-orange-500 focus:outline-none"
+          placeholder="Cari nama / nomor HP"
         />
       </div>
 
@@ -453,50 +467,75 @@ export default function Pelanggan() {
         <div className="space-y-2">
           {filtered.map((c) => (
             <div key={c.id} className="rounded-xl bg-white p-4 shadow-sm">
-              <div className="flex items-start justify-between">
+              {/* Info */}
+              <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0 flex-1">
                   <p className="font-semibold text-gray-900">{c.nama}</p>
-                  <p className="text-sm text-gray-500">{c.hp || '—'}</p>
-                  {c.alamat && <p className="mt-0.5 text-xs text-gray-400">📍 {c.alamat}</p>}
-                  {c.catatan && <p className="mt-0.5 text-xs text-gray-400">📝 {c.catatan}</p>}
-                  {c.ongkir > 0 && (
-                    <p className="mt-0.5 text-xs text-gray-400">
-                      🛵 Ongkir: Rp {c.ongkir.toLocaleString('id-ID')}
-                    </p>
-                  )}
-                  <p className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-semibold ${c.deposit > 0 ? 'bg-green-50 text-green-700' : 'bg-gray-50 text-gray-500'}`}>
-                    💰 Deposit: {c.deposit ? 'Rp ' + c.deposit.toLocaleString('id-ID') : 'Rp 0'}
-                  </p>
-                </div>
-                <div className="ml-2 flex shrink-0 flex-col items-end gap-1">
-                  <button
-                    onClick={() => {
-                      setDepositModal(c)
-                      setDepositAmount('')
-                      setDepositError('')
-                    }}
-                    className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-green-600 hover:bg-green-50"
-                    title="Kelola deposit"
-                  >
-                    💰 Deposit
-                  </button>
-                  <div className="flex gap-1">
-                    <button
-                      onClick={() => openEditForm(c)}
-                      className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-orange-600 hover:bg-orange-50"
-                      title="Edit pelanggan"
-                    >
-                      ✏️ Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(c)}
-                      className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
-                      title="Hapus pelanggan"
-                    >
-                      🗑️ Hapus
-                    </button>
+                  <div className="mt-1 space-y-0.5 text-xs text-gray-500">
+                    {c.hp && (
+                      <p className="flex items-center gap-1.5">
+                        <Phone size={12} className="shrink-0" />
+                        <span className="truncate">{c.hp}</span>
+                      </p>
+                    )}
+                    {c.alamat && (
+                      <p className="flex items-center gap-1.5">
+                        <MapPin size={12} className="shrink-0" />
+                        <span className="truncate">{c.alamat}</span>
+                      </p>
+                    )}
+                    {c.catatan && (
+                      <p className="flex items-center gap-1.5">
+                        <StickyNote size={12} className="shrink-0" />
+                        <span className="truncate">{c.catatan}</span>
+                      </p>
+                    )}
+                    {c.ongkir > 0 && (
+                      <p className="flex items-center gap-1.5">
+                        <Bike size={12} className="shrink-0" />
+                        <span>Ongkir: Rp {c.ongkir.toLocaleString('id-ID')}</span>
+                      </p>
+                    )}
                   </div>
                 </div>
+                {/* Deposit badge */}
+                <span
+                  className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${
+                    c.deposit > 0 ? 'bg-green-50 text-green-700' : 'bg-gray-50 text-gray-500'
+                  }`}
+                >
+                  <Wallet size={12} />
+                  Rp {(c.deposit || 0).toLocaleString('id-ID')}
+                </span>
+              </div>
+
+              {/* Action row */}
+              <div className="mt-3 flex items-center justify-end gap-1 border-t border-gray-100 pt-2">
+                <button
+                  onClick={() => {
+                    setDepositModal(c)
+                    setDepositAmount('')
+                    setDepositError('')
+                  }}
+                  className="rounded-lg p-2 text-green-600 hover:bg-green-50"
+                  title="Kelola deposit"
+                >
+                  <Wallet size={18} />
+                </button>
+                <button
+                  onClick={() => openEditForm(c)}
+                  className="rounded-lg p-2 text-orange-600 hover:bg-orange-50"
+                  title="Edit pelanggan"
+                >
+                  <Pencil size={18} />
+                </button>
+                <button
+                  onClick={() => handleDelete(c)}
+                  className="rounded-lg p-2 text-red-600 hover:bg-red-50"
+                  title="Hapus pelanggan"
+                >
+                  <Trash2 size={18} />
+                </button>
               </div>
             </div>
           ))}
@@ -508,15 +547,16 @@ export default function Pelanggan() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="w-full max-w-sm rounded-xl bg-white p-5 shadow-2xl">
             <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-sm font-bold text-gray-800">💰 Kelola Deposit</h3>
+              <h3 className="flex items-center gap-2 text-sm font-bold text-gray-800">
+                <Wallet size={18} className="text-green-600" />
+                Kelola Deposit
+              </h3>
               <button
                 onClick={() => setDepositModal(null)}
                 className="rounded-lg p-1 text-gray-400 hover:bg-gray-100"
                 aria-label="Tutup"
               >
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <X size={20} />
               </button>
             </div>
 
@@ -550,16 +590,18 @@ export default function Pelanggan() {
               <button
                 onClick={handleTopUp}
                 disabled={depositSaving}
-                className="rounded-lg bg-green-600 py-2.5 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
+                className="flex items-center justify-center gap-1.5 rounded-lg bg-green-600 py-2.5 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
               >
-                {depositSaving ? 'Simpan...' : '➕ Tambah'}
+                <Plus size={16} />
+                Tambah
               </button>
               <button
                 onClick={handleKurangi}
                 disabled={depositSaving}
-                className="rounded-lg bg-red-600 py-2.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+                className="flex items-center justify-center gap-1.5 rounded-lg bg-red-600 py-2.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
               >
-                {depositSaving ? 'Simpan...' : '➖ Kurangi'}
+                <Minus size={16} />
+                Kurangi
               </button>
             </div>
           </div>
