@@ -25,7 +25,7 @@ export default function Layout() {
     <div className="min-h-screen bg-gray-100">
       {/* Header dengan gradient seamless */}
       <header className="sticky top-0 z-20 bg-gradient-to-r from-orange-600 to-orange-500 text-white shadow">
-        <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
+        <div className="mx-auto flex max-w-2xl lg:max-w-4xl xl:max-w-6xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2">
             <img src="/logo.png" alt="Strikil Lite" className="h-8 w-8 rounded-full object-contain" />
             <span className="text-sm font-bold leading-tight">STRIKIL<br/>Setrika Kiloan Cimahi</span>
@@ -101,7 +101,7 @@ export default function Layout() {
       )}
 
       {/* Konten */}
-      <main className="mx-auto max-w-2xl px-4 py-4">
+      <main className="mx-auto max-w-2xl lg:max-w-4xl xl:max-w-6xl px-4 py-4">
         <Outlet />
       </main>
     </div>
