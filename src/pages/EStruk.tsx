@@ -47,6 +47,7 @@ export default function EStruk() {
     const hp = order.customers.hp.replace(/[^0-9]/g, '')
     const progressUrl = `${window.location.origin}/progress/${order.nomor_order}`
     const pelangganUrl = `${window.location.origin}/pelanggan/${order.customers.hp}`
+    const fotoUrl = order.foto_penimbangan_url
     const pesan = encodeURIComponent(
       `*━━━━━━━━━━━━━━━━━━━━━━━━━━━━*\n` +
         `*${settings?.nama_toko || 'STRIKIL'}*\n` +
@@ -66,6 +67,9 @@ export default function EStruk() {
         `*━━━━━━━━━━━━━━━━━━━━━━━━━━━━*\n\n` +
         `📱 Lacak Progress Order\n${progressUrl}\n\n` +
         `👤 Profil Pelanggan\n${pelangganUrl}\n\n` +
+        (fotoUrl
+          ? `🖼️ Foto Penimbangan\n${fotoUrl}\n\n`
+          : '') +
         `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
         `Terima kasih 🙏\n` +
         `*${settings?.nama_toko || 'Strikil'}*`
