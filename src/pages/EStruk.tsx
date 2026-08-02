@@ -47,7 +47,6 @@ export default function EStruk() {
     const hp = order.customers.hp.replace(/[^0-9]/g, '')
     const progressUrl = `${window.location.origin}/progress/${order.nomor_order}`
     const pelangganUrl = `${window.location.origin}/pelanggan/${order.customers.hp}`
-    const logoUrl = `${window.location.origin}/logo.png`
     const pesan = encodeURIComponent(
       `*━━━━━━━━━━━━━━━━━━━━━━━━━━━━*\n` +
         `*${settings?.nama_toko || 'STRIKIL'}*\n` +
@@ -64,20 +63,9 @@ export default function EStruk() {
         `Status: *${statusPembayaranLabel[order.status_pembayaran || 'belum_bayar'] || order.status_pembayaran}*\n\n` +
         `*📦 PENGANTARAN*\n` +
         `*${order.pengantaran === 'antar_jemput' ? '🛵 Antar Jemput' : '🏪 Di Tempat'}*\n\n` +
-        `*━━━━━━━━━━━━━━━━━━━━━━━━━━━━*\n` +
-        `*🔗 LINK PENTING*\n` +
-        `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-        `📱 *Lacak Progress:*\n` +
-        `${progressUrl}\n\n` +
-        `👤 *Profil Pelanggan:*\n` +
-        `${pelangganUrl}\n\n` +
-        `🖼️ *Foto Penimbangan:*\n` +
-        `${logoUrl}\n\n` +
-        `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-        `*💡 Tindakan:*\n` +
-        `• Lihat Progress: ${progressUrl}\n` +
-        `• Profil Pelanggan: ${pelangganUrl}\n` +
-        `• Hubungi Kami: https://wa.me/${settings?.no_hp?.replace(/[^0-9]/g, '') || ''}\n\n` +
+        `*━━━━━━━━━━━━━━━━━━━━━━━━━━━━*\n\n` +
+        `📱 Lacak Progress Order\n${progressUrl}\n\n` +
+        `👤 Profil Pelanggan\n${pelangganUrl}\n\n` +
         `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
         `Terima kasih 🙏\n` +
         `*${settings?.nama_toko || 'Strikil'}*`
