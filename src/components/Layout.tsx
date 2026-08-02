@@ -1,16 +1,28 @@
 import { useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import {
+  LayoutDashboard,
+  PlusCircle,
+  ClipboardList,
+  History,
+  Users,
+  Wallet,
+  Settings,
+  LogOut,
+  Menu,
+  X,
+} from 'lucide-react'
 
 const navItems = [
-  { to: '/', label: 'Dashboard', icon: '🏠' },
-  { to: '/order-baru', label: 'Order Baru', icon: '➕' },
-  { to: '/order-aktif', label: 'Order Aktif', icon: '📋' },
-  { to: '/riwayat', label: 'Riwayat', icon: '🕘' },
-  { to: '/pelanggan', label: 'Pelanggan', icon: '👥' },
-  { to: '/jasa', label: 'Jasa & Tarif', icon: '💰' },
-  { to: '/pengaturan', label: 'Pengaturan', icon: '⚙️' },
-  { to: '/login', label: 'Keluar', icon: '🚪', isLogout: true },
+  { to: '/', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/order-baru', label: 'Order Baru', icon: PlusCircle },
+  { to: '/order-aktif', label: 'Order Aktif', icon: ClipboardList },
+  { to: '/riwayat', label: 'Riwayat', icon: History },
+  { to: '/pelanggan', label: 'Pelanggan', icon: Users },
+  { to: '/jasa', label: 'Jasa & Tarif', icon: Wallet },
+  { to: '/pengaturan', label: 'Pengaturan', icon: Settings },
+  { to: '/login', label: 'Keluar', icon: LogOut, isLogout: true },
 ]
 
 export default function Layout() {
@@ -40,12 +52,12 @@ export default function Layout() {
       {/* Floating Action Button (kanan bawah, naik saat bottom sheet terbuka) */}
       <button
         onClick={() => setMenuOpen(!menuOpen)}
-        className={`fixed z-40 flex h-14 w-14 items-center justify-center rounded-full bg-orange-600 text-2xl text-white shadow-lg transition-all duration-300 hover:bg-orange-700 ${
+        className={`fixed z-40 flex h-14 w-14 items-center justify-center rounded-full bg-orange-600 text-white shadow-lg transition-all duration-300 hover:bg-orange-700 ${
           menuOpen ? 'bottom-[340px] right-6' : 'bottom-6 right-6'
         }`}
         aria-label="Menu"
       >
-        {menuOpen ? '✕' : '☰'}
+        {menuOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
       {/* Bottom Sheet Navigator */}
@@ -67,37 +79,38 @@ export default function Layout() {
                 className="rounded-lg p-1 text-gray-400 hover:bg-gray-100"
                 aria-label="Tutup"
               >
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <X size={20} />
               </button>
             </div>
             <nav className="grid grid-cols-2 gap-2 px-4 pb-6">
-              {navItems.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  end={item.to === '/'}
-                  onClick={() => {
-                    if (item.isLogout) {
-                      handleLogout()
+              {navItems.map((item) => {
+                const Icon = item.icon
+                return (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    end={item.to === '/'}
+                    onClick={() => {
+                      if (item.isLogout) {
+                        handleLogout()
+                      }
+                      setMenuOpen(false)
+                    }}
+                    className={({ isActive }) =>
+                      `flex flex-col items-center gap-1.5 rounded-xl border px-3 py-4 text-sm font-medium transition ${
+                        isActive
+                          ? 'border-orange-500 bg-orange-50 text-orange-700'
+                          : item.isLogout
+                            ? 'border-red-200 text-red-600 hover:border-red-300 hover:bg-red-50'
+                            : 'border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50'
+                      }`
                     }
-                    setMenuOpen(false)
-                  }}
-                  className={({ isActive }) =>
-                    `flex flex-col items-center gap-1.5 rounded-xl border px-3 py-4 text-sm font-medium transition ${
-                      isActive
-                        ? 'border-orange-500 bg-orange-50 text-orange-700'
-                        : item.isLogout
-                          ? 'border-red-200 text-red-600 hover:border-red-300 hover:bg-red-50'
-                          : 'border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50'
-                    }`
-                  }
-                >
-                  <span className="text-2xl">{item.icon}</span>
-                  {item.label}
-                </NavLink>
-              ))}
+                  >
+                    <Icon size={22} strokeWidth={2} />
+                    {item.label}
+                  </NavLink>
+                )
+              })}
             </nav>
           </div>
         </>

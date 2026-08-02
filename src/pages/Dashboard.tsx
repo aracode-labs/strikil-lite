@@ -2,6 +2,16 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import type { Order } from '../types'
+import {
+  PlusCircle,
+  Users,
+  ClipboardList,
+  History,
+  Wallet,
+  Package,
+  Loader2,
+  CheckCircle2,
+} from 'lucide-react'
 
 const statusColors: Record<string, string> = {
   Diterima: 'bg-gray-100 text-gray-700',
@@ -47,66 +57,61 @@ export default function Dashboard() {
   const formatRupiah = (n: number) =>
     'Rp ' + n.toLocaleString('id-ID')
 
+  const stats = [
+    { label: 'Order Masuk', value: orderMasuk, icon: Package, color: 'text-orange-600' },
+    { label: 'Diproses', value: diproses, icon: Loader2, color: 'text-orange-600' },
+    { label: 'Siap Diambil', value: siapDiambil, icon: CheckCircle2, color: 'text-orange-600' },
+    { label: 'Selesai', value: selesai, icon: CheckCircle2, color: 'text-green-600' },
+  ]
+
+  const quickMenus = [
+    { to: '/order-baru', label: 'Order Baru', icon: PlusCircle, bg: 'bg-orange-600 text-white hover:bg-orange-700' },
+    { to: '/pelanggan', label: 'Pelanggan', icon: Users, bg: 'bg-white text-gray-800 hover:bg-gray-50' },
+    { to: '/order-aktif', label: 'Order Aktif', icon: ClipboardList, bg: 'bg-white text-gray-800 hover:bg-gray-50' },
+    { to: '/riwayat', label: 'Riwayat', icon: History, bg: 'bg-white text-gray-800 hover:bg-gray-50' },
+  ]
+
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-bold text-gray-800">Hari Ini</h2>
 
       {/* Statistik */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="rounded-xl bg-white p-4 shadow-sm">
-          <p className="text-sm text-gray-500">Order Masuk</p>
-          <p className="text-2xl font-bold text-gray-900">{orderMasuk}</p>
-        </div>
-        <div className="rounded-xl bg-white p-4 shadow-sm">
-          <p className="text-sm text-gray-500">Diproses</p>
-          <p className="text-2xl font-bold text-orange-600">{diproses}</p>
-        </div>
-        <div className="rounded-xl bg-white p-4 shadow-sm">
-          <p className="text-sm text-gray-500">Siap Diambil</p>
-          <p className="text-2xl font-bold text-orange-600">{siapDiambil}</p>
-        </div>
-        <div className="rounded-xl bg-white p-4 shadow-sm">
-          <p className="text-sm text-gray-500">Selesai</p>
-          <p className="text-2xl font-bold text-green-600">{selesai}</p>
-        </div>
+        {stats.map((s) => (
+          <div key={s.label} className="rounded-xl bg-white p-4 shadow-sm">
+            <div className="flex items-center gap-2">
+              <s.icon size={18} className={s.color} />
+              <p className="text-sm font-medium text-gray-500">{s.label}</p>
+            </div>
+            <p className="mt-1 text-2xl font-bold text-gray-900">{s.value}</p>
+          </div>
+        ))}
       </div>
 
       {/* Pendapatan */}
       <div className="rounded-xl bg-orange-600 p-4 text-white shadow-sm">
-        <p className="text-sm text-orange-100">Pendapatan Hari Ini</p>
-        <p className="text-3xl font-bold">{formatRupiah(pendapatan)}</p>
+        <div className="flex items-center gap-2">
+          <Wallet size={18} />
+          <p className="text-sm text-orange-100">Pendapatan Hari Ini</p>
+        </div>
+        <p className="mt-1 text-3xl font-bold">{formatRupiah(pendapatan)}</p>
       </div>
 
       {/* Menu Cepat */}
       <div className="grid grid-cols-2 gap-3">
-        <Link
-          to="/order-baru"
-          className="rounded-xl bg-orange-600 p-4 text-center text-white shadow-sm transition hover:bg-orange-700"
-        >
-          <span className="text-2xl">➕</span>
-          <p className="mt-1 font-semibold">Order Baru</p>
-        </Link>
-        <Link
-          to="/pelanggan"
-          className="rounded-xl bg-white p-4 text-center text-gray-800 shadow-sm transition hover:bg-gray-50"
-        >
-          <span className="text-2xl">👥</span>
-          <p className="mt-1 font-semibold">Pelanggan</p>
-        </Link>
-        <Link
-          to="/order-aktif"
-          className="rounded-xl bg-white p-4 text-center text-gray-800 shadow-sm transition hover:bg-gray-50"
-        >
-          <span className="text-2xl">📋</span>
-          <p className="mt-1 font-semibold">Order Aktif</p>
-        </Link>
-        <Link
-          to="/riwayat"
-          className="rounded-xl bg-white p-4 text-center text-gray-800 shadow-sm transition hover:bg-gray-50"
-        >
-          <span className="text-2xl">🕘</span>
-          <p className="mt-1 font-semibold">Riwayat</p>
-        </Link>
+        {quickMenus.map((m) => {
+          const Icon = m.icon
+          return (
+            <Link
+              key={m.to}
+              to={m.to}
+              className={`rounded-xl p-4 text-center shadow-sm transition ${m.bg}`}
+            >
+              <Icon size={24} className="mx-auto" />
+              <p className="mt-1 font-semibold">{m.label}</p>
+            </Link>
+          )
+        })}
       </div>
 
       {/* Order Aktif */}
