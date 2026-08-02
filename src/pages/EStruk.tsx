@@ -46,6 +46,7 @@ export default function EStruk() {
     if (!order || !order.customers?.hp) return
     const hp = order.customers.hp.replace(/[^0-9]/g, '')
     const progressUrl = `${window.location.origin}/progress/${order.nomor_order}`
+    const pelangganUrl = `${window.location.origin}/pelanggan/${order.customers.hp}`
     const logoUrl = `${window.location.origin}/logo.png`
     const pesan = encodeURIComponent(
       `*━━━━━━━━━━━━━━━━━━━━━━━━━━━━*\n` +
@@ -68,11 +69,14 @@ export default function EStruk() {
         `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
         `📱 *Lacak Progress:*\n` +
         `${progressUrl}\n\n` +
+        `👤 *Profil Pelanggan:*\n` +
+        `${pelangganUrl}\n\n` +
         `🖼️ *Foto Penimbangan:*\n` +
         `${logoUrl}\n\n` +
         `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
         `*💡 Tindakan:*\n` +
         `• Lihat Progress: ${progressUrl}\n` +
+        `• Profil Pelanggan: ${pelangganUrl}\n` +
         `• Hubungi Kami: https://wa.me/${settings?.no_hp?.replace(/[^0-9]/g, '') || ''}\n\n` +
         `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
         `Terima kasih 🙏\n` +
@@ -310,6 +314,14 @@ export default function EStruk() {
             <p className="text-[10px] uppercase tracking-wider text-orange-400">Lacak Order</p>
             <p className="break-all text-xs font-medium text-orange-600">{getProgressUrl()}</p>
           </div>
+          {order.customers?.hp && (
+            <div className="mt-2 rounded-lg bg-green-50 px-3 py-2">
+              <p className="text-[10px] uppercase tracking-wider text-green-400">Profil Pelanggan</p>
+              <p className="break-all text-xs font-medium text-green-600">
+                {`${window.location.origin}/pelanggan/${order.customers.hp}`}
+              </p>
+            </div>
+          )}
         </div>
       </div>
 

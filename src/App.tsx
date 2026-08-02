@@ -50,8 +50,9 @@ function RequireAuth() {
 export default function App() {
   return (
     <Routes>
-      {/* Route publik: lacak progress order (tanpa login) */}
+      {/* Route publik: lacak progress order & detail pelanggan (tanpa login) */}
       <Route path="/progress/:nomorOrder" element={<Progress />} />
+      <Route path="/pelanggan/:hp" element={<PelangganDetail />} />
 
       <Route element={<RedirectIfAuthed />}>
         <Route path="/login" element={<Login />} />
@@ -63,7 +64,6 @@ export default function App() {
           <Route path="/order-aktif" element={<OrderAktif />} />
           <Route path="/riwayat" element={<Riwayat />} />
           <Route path="/pelanggan" element={<Pelanggan />} />
-          <Route path="/pelanggan/:hp" element={<PelangganDetail />} />
           <Route path="/jasa" element={<Jasa />} />
           <Route path="/pengaturan" element={<Pengaturan />} />
           <Route path="/e-struk/:id" element={<EStruk />} />
