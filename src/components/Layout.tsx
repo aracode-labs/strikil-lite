@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import {
   LayoutDashboard,
@@ -12,6 +12,8 @@ import {
   LogOut,
   Menu,
   X,
+  ArrowLeft,
+  Home,
 } from 'lucide-react'
 
 const navItems = [
@@ -28,6 +30,8 @@ const navItems = [
 export default function Layout() {
   const [menuOpen, setMenuOpen] = useState(false)
   const navigate = useNavigate()
+  const location = useLocation()
+  const isDashboard = location.pathname === '/'
 
   async function handleLogout() {
     const yakin = confirm('Yakin ingin keluar dari aplikasi?')
@@ -37,15 +41,41 @@ export default function Layout() {
     navigate('/login')
   }
 
+  function handleBack() {
+    if (window.history.length > 2) {
+      navigate(-1)
+    } else {
+      navigate('/')
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header dengan gradient seamless */}
       <header className="sticky top-0 z-20 bg-gradient-to-r from-orange-600 to-orange-500 text-white shadow">
         <div className="mx-auto flex max-w-2xl lg:max-w-4xl xl:max-w-6xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2">
+            {!isDashboard && (
+              <button
+                onClick={handleBack}
+                className="mr-1 rounded-lg p-1.5 text-white/90 transition hover:bg-orange-700 hover:text-white"
+                aria-label="Kembali"
+              >
+                <ArrowLeft size={20} />
+              </button>
+            )}
             <img src="/logo.png" alt="Strikil Lite" className="h-8 w-8 rounded-full object-contain" />
             <span className="text-sm font-bold leading-tight">STRIKIL<br/>Setrika Kiloan Cimahi</span>
           </div>
+          {!isDashboard && (
+            <button
+              onClick={() => navigate('/')}
+              className="rounded-lg p-1.5 text-white/90 transition hover:bg-orange-700 hover:text-white"
+              aria-label="Ke Dashboard"
+            >
+              <Home size={20} />
+            </button>
+          )}
         </div>
       </header>
 
