@@ -1,62 +1,70 @@
 -- ============================================
--- Strikil Lite - Migration: Tambah Jenis Jasa
---
+-- Strikil Lite - Migration: Tambah Tabel Services
 -- Jalankan di Supabase SQL Editor
 -- ============================================
 
--- 1. TABEL SERVICES (jenis jasa)
+-- Buat tabel services (idempotent)
 create table if not exists public.services (
   id uuid primary key default gen_random_uuid(),
   nama text not null,
   kategori text not null check (kategori in ('kiloan', 'satuan')),
   satuan_label text not null default 'Kg',
   harga numeric(10,2) not null default 0,
-  created_at timestamptz not null default now()
+  created_at timestamp with time zone default now()
 );
 
+-- Index untuk performa
 create index if not exists idx_services_kategori on public.services(kategori);
 
--- 2. ALTER TABEL ORDERS - tambah kolom service
-alter table public.orders add column if not exists service_id uuid references public.services(id);
-alter table public.orders add column if not exists service_nama text not null default '';
-alter table public.orders add column if not exists jumlah numeric(10,2) not null default 0;
-alter table public.orders add column if not exists satuan_label text not null default 'Kg';
-alter table public.orders add column if not exists harga_satuan numeric(10,2) not null default 0;
-
--- 3. RLS untuk services
+-- RLS: public read, authenticated write
 alter table public.services enable row level security;
 
-drop policy if exists "services_all_authenticated" on public.services;
-create policy "services_all_authenticated" on public.services
-  for all to authenticated using (true) with check (true);
+create policy "Public Read Services"
+on public.services for select
+using (true);
 
-drop policy if exists "services_public_read" on public.services;
-create policy "services_public_read" on public.services
-  for select to anon, authenticated using (true);
+create policy "Authenticated Write Services"
+on public.services for insert
+with check (auth.role() = 'authenticated');
 
--- 4. SEED DATA SERVICES
-insert into public.services (nama, kategori, satuan_label, harga) values
-  ('Setrika Reguler', 'kiloan', 'Kg', 7000),
-  ('Setrika Express', 'kiloan', 'Kg', 10000),
-  ('Setrika Super Express', 'kiloan', 'Kg', 15000),
-  ('Cuci + Setrika', 'kiloan', 'Kg', 12000),
-  ('Cuci Karpet', 'satuan', 'meter', 15000),
-  ('Cuci Selimut', 'satuan', 'pcs', 20000),
-  ('Cuci Jaket', 'satuan', 'pcs', 20000),
-  ('Cuci Hoodie', 'satuan', 'pcs', 20000),
-  ('Cuci Sweater', 'satuan', 'pcs', 20000),
-  ('Cuci Tas', 'satuan', 'pcs', 25000),
-  ('Cuci Sprei + Sarung Bantal & Guling', 'satuan', 'set', 25000),
-  ('Cuci Handuk', 'satuan', 'pcs', 10000)
+create policy "Authenticated Update Services"
+on public.services for update
+using (auth.role() = 'authenticated');
+
+create policy "Authenticated Delete Services"
+on public.services for delete
+using (auth.role() = 'authenticated');
+
+-- Seed data default
+insert into public.services (nama, kategori, satuan_label, harga)
+values
+  ('Setrika Reguler', 'kiloan', 'Kg', 5000),
+  ('Setrika Kilat', 'kiloan', 'Kg', 7000),
+  ('Setrika Express', 'kiloan', 'Kg', 10000)
 on conflict do nothing;
 
--- 5. UPDATE ORDER LAMA: set service_nama default untuk order yang belum punya service
-update public.orders
-set service_nama = 'Setrika Reguler',
-    jumlah = berat,
-    satuan_label = 'Kg',
-    harga_satuan = harga_perkg
-where service_id is null;
+insert into public.services (nama, kategori, satuan_label, harga)
+values
+  ('Cuci Kemeja', 'satuan', 'pcs', 15000),
+  ('Cuci Celana', 'satuan', 'pcs', 12000),
+  ('Cuci Jas', 'satuan', 'pcs', 25000),
+  ('Cuci Gaun', 'satuan', 'pcs', 35000)
+on conflict do nothing;
 
--- Verifikasi
-select nama, kategori, satuan_label, harga from public.services order by kategori, nama;
+-- Foreign key dari orders ke services (idempotent)
+-- Catatan: kolom service_id sudah ada di tabel orders (migration_orders_service.sql)
+-- Tambahkan FK jika belum ada
+do $$
+begin
+  if not exists (
+    select 1 from information_schema.table_constraints
+    where table_schema = 'public'
+      and table_name = 'orders'
+      and constraint_name = 'orders_service_id_fkey'
+  ) then
+    alter table public.orders
+    add constraint orders_service_id_fkey
+    foreign key (service_id) references public.services(id)
+    on delete set null;
+  end if;
+end $$;
