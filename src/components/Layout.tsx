@@ -10,6 +10,7 @@ const navItems = [
   { to: '/pelanggan', label: 'Pelanggan', icon: '👥' },
   { to: '/jasa', label: 'Jasa & Tarif', icon: '💰' },
   { to: '/pengaturan', label: 'Pengaturan', icon: '⚙️' },
+  { to: '/login', label: 'Keluar', icon: '🚪', isLogout: true },
 ]
 
 export default function Layout() {
@@ -17,6 +18,9 @@ export default function Layout() {
   const navigate = useNavigate()
 
   async function handleLogout() {
+    const yakin = confirm('Yakin ingin keluar dari aplikasi?')
+    if (!yakin) return
+
     await supabase.auth.signOut()
     navigate('/login')
   }
@@ -30,12 +34,6 @@ export default function Layout() {
             <img src="/logo.png" alt="Strikil Lite" className="h-8 w-8 rounded-full object-contain" />
             <span className="text-sm font-bold leading-tight">STRIKIL<br/>Setrika Kiloan Cimahi</span>
           </div>
-          <button
-            onClick={handleLogout}
-            className="rounded-lg bg-orange-700 px-3 py-1.5 text-sm font-medium hover:bg-orange-800"
-          >
-            Keluar
-          </button>
         </div>
       </header>
 
@@ -80,12 +78,19 @@ export default function Layout() {
                   key={item.to}
                   to={item.to}
                   end={item.to === '/'}
-                  onClick={() => setMenuOpen(false)}
+                  onClick={() => {
+                    if (item.isLogout) {
+                      handleLogout()
+                    }
+                    setMenuOpen(false)
+                  }}
                   className={({ isActive }) =>
                     `flex flex-col items-center gap-1.5 rounded-xl border px-3 py-4 text-sm font-medium transition ${
                       isActive
                         ? 'border-orange-500 bg-orange-50 text-orange-700'
-                        : 'border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50'
+                        : item.isLogout
+                          ? 'border-red-200 text-red-600 hover:border-red-300 hover:bg-red-50'
+                          : 'border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50'
                     }`
                   }
                 >
