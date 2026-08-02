@@ -39,13 +39,11 @@ export default function Layout() {
         </div>
       </header>
 
-      {/* Floating Action Button (tengah bawah, naik saat bottom sheet terbuka) */}
+      {/* Floating Action Button (kanan bawah, naik saat bottom sheet terbuka) */}
       <button
         onClick={() => setMenuOpen(!menuOpen)}
         className={`fixed z-40 flex h-14 w-14 items-center justify-center rounded-full bg-orange-600 text-2xl text-white shadow-lg transition-all duration-300 hover:bg-orange-700 ${
-          menuOpen
-            ? 'bottom-[340px] right-1/2 translate-x-1/2'
-            : 'bottom-6 right-1/2 translate-x-1/2'
+          menuOpen ? 'bottom-[340px] right-6' : 'bottom-6 right-6'
         }`}
         aria-label="Menu"
       >
