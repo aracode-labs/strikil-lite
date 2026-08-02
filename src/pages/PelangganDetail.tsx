@@ -390,6 +390,45 @@ export default function PelangganDetail() {
                   </div>
                   <p className="mt-1 text-xl font-bold text-gray-900">{formatRupiah(totalBelanja)}</p>
                 </div>
+
+                {/* Info Pembayaran */}
+                <div className="rounded-lg border border-gray-200 p-4">
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
+                    Cara Pembayaran
+                  </p>
+
+                  {/* Transfer Bank */}
+                  <div className="mb-3 rounded-lg bg-blue-50 p-3">
+                    <p className="flex items-center gap-2 text-sm font-semibold text-blue-700">
+                      🏦 Transfer Bank Mandiri
+                    </p>
+                    <div className="mt-1.5 space-y-0.5 text-xs text-blue-900">
+                      <p>No. Rekening: <span className="font-bold">1320011968675</span></p>
+                      <p>a.n. <span className="font-semibold">Dewi Warna Ratna Sari</span></p>
+                    </div>
+                  </div>
+
+                  {/* Gopay */}
+                  <div className="mb-3 rounded-lg bg-green-50 p-3">
+                    <p className="flex items-center gap-2 text-sm font-semibold text-green-700">
+                      📱 Gopay
+                    </p>
+                    <div className="mt-1.5 space-y-0.5 text-xs text-green-900">
+                      <p>No. HP: <span className="font-bold">6281320447875</span></p>
+                      <p>a.n. <span className="font-semibold">Dewi Warna Ratna Sari</span></p>
+                    </div>
+                  </div>
+
+                  {/* QRIS */}
+                  <div className="rounded-lg bg-gray-50 p-3">
+                    <p className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+                      📲 QRIS
+                    </p>
+                    <p className="mt-1 text-xs text-gray-500">
+                      Sedang dalam proses ⏳
+                    </p>
+                  </div>
+                </div>
               </div>
             )}
           </div>
