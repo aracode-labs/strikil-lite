@@ -6,6 +6,7 @@ import Login from './pages/Login'
 import Layout from './components/Layout'
 import Dashboard from './pages/Dashboard'
 import Pelanggan from './pages/Pelanggan'
+import PelangganDetail from './pages/PelangganDetail'
 import OrderBaru from './pages/OrderBaru'
 import EStruk from './pages/EStruk'
 import OrderAktif from './pages/OrderAktif'
@@ -62,6 +63,7 @@ export default function App() {
           <Route path="/order-aktif" element={<OrderAktif />} />
           <Route path="/riwayat" element={<Riwayat />} />
           <Route path="/pelanggan" element={<Pelanggan />} />
+          <Route path="/pelanggan/:hp" element={<PelangganDetail />} />
           <Route path="/jasa" element={<Jasa />} />
           <Route path="/pengaturan" element={<Pengaturan />} />
           <Route path="/e-struk/:id" element={<EStruk />} />

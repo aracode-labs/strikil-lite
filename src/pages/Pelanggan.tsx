@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
+import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import type { Customer, Service } from '../types'
 import {
@@ -470,7 +471,9 @@ export default function Pelanggan() {
               {/* Info */}
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0 flex-1">
-                  <p className="font-semibold text-gray-900">{c.nama}</p>
+                  <Link to={`/pelanggan/${c.hp}`} className="font-semibold text-gray-900 hover:text-orange-600">
+                    {c.nama}
+                  </Link>
                   <div className="mt-1 space-y-0.5 text-xs text-gray-500">
                     {c.hp && (
                       <p className="flex items-center gap-1.5">
